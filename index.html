@@ -58,7 +58,13 @@
         #sidebar-toggle-button:hover { background-color: var(--history-item-hover-bg); }
         #history-list-container { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex-grow: 1; }
         .history-group-header { font-size: 0.75em; color: var(--sidebar-group-text); padding: 16px 12px 4px; font-weight: 500; }
-        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s, color 0.2s; }
+        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s, color 0.2s; 
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
         .history-item:hover { background-color: var(--history-item-hover-bg); }
         .history-item.active { background-color: var(--history-item-active-bg); color: var(--history-item-active-text); font-weight: 500; }
         .icon { font-size: 1.5em; display: inline-block; width: 24px; height: 24px; text-align: center; line-height: 24px; margin-right: 12px; }
@@ -159,7 +165,9 @@
         #date-picker-popover.show { opacity: 1; visibility: visible; transform: scale(1); }
         .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 0; }
         .dp-month-year { font-weight: 600; font-size: 1.1em; color: var(--text-primary); }
-        .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: 1px solid var(--border-color); width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 8px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; }
+        .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: 1px solid var(--border-color); width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 8px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; 
+            touch-action: manipulation; /* 【新增】防止在移动设备上双击缩放 */
+        }
         .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
         .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
         #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; }
@@ -1013,10 +1021,9 @@
                 if (document.activeElement) document.activeElement.blur();
             });
             
-            // 修正: 为“开启新对话”按钮添加专门的重置逻辑
             newChatButton.addEventListener('click', () => {
-                dpSelectedDate = null; // 重置日历组件的已选日期
-                startNewChat(); // 调用startNewChat，不带参数，即开始今天的谜题
+                dpSelectedDate = null;
+                startNewChat();
             });
 
             sendButton.addEventListener('click', sendMessage);
@@ -1038,20 +1045,88 @@
                     userInput.placeholder = GAME_MODES[currentGameMode].placeholder;
                 }
             });
+
+            // --- 【开始】修改：增强的侧边栏项目事件处理，兼容PC右键和移动端长按 ---
+
+            // 1. 辅助函数：用于显示上下文菜单并处理边界
+            const showContextMenu = (target, x, y) => {
+                contextMenuTarget = target;
+                closeDropdown();
+                datePickerPopover.classList.remove('show');
+
+                requestAnimationFrame(() => {
+                    // 确保菜单不会超出视窗
+                    const menuWidth = contextMenu.offsetWidth || 160;
+                    const menuHeight = contextMenu.offsetHeight || 100;
+                    const viewWidth = window.innerWidth;
+                    const viewHeight = window.innerHeight;
+
+                    const finalX = (x + menuWidth > viewWidth) ? viewWidth - menuWidth - 5 : x;
+                    const finalY = (y + menuHeight > viewHeight) ? viewHeight - menuHeight - 5 : y;
+
+                    contextMenu.style.top = `${finalY}px`;
+                    contextMenu.style.left = `${finalX}px`;
+                    contextMenu.classList.add('show');
+                });
+            };
+
+            // 2. PC端：保留原有的右键 `contextmenu` 事件
             historyListContainer.addEventListener('contextmenu', (e) => {
                 const target = e.target.closest('.history-item');
                 if (target) {
                     e.preventDefault();
-                    contextMenuTarget = target;
-                    closeDropdown();
-                    datePickerPopover.classList.remove('show');
-                    requestAnimationFrame(() => {
-                        contextMenu.style.top = `${e.clientY}px`;
-                        contextMenu.style.left = `${e.clientX}px`;
-                        contextMenu.classList.add('show');
-                    });
+                    showContextMenu(target, e.clientX, e.clientY);
                 }
             });
+
+            // 3. 移动端：实现自定义长按逻辑
+            let longPressTimer = null;
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            historyListContainer.addEventListener('touchstart', (e) => {
+                const target = e.target.closest('.history-item');
+                if (target) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+
+                    // 设置一个500毫秒的计时器来检测长按
+                    longPressTimer = setTimeout(() => {
+                        // 计时器触发，判定为长按
+                        longPressTimer = null; // 清除计时器ID
+                        showContextMenu(target, e.touches[0].clientX, e.touches[0].clientY);
+                    }, 500);
+                }
+            }, { passive: true }); // 使用 passive: true 因为我们不在touchstart中立即阻止默认行为
+
+            historyListContainer.addEventListener('touchmove', (e) => {
+                // 如果手指移动超过一个微小阈值，则判定为滑动，取消长按
+                const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+                const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                if (longPressTimer && (deltaX > 10 || deltaY > 10)) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
+            historyListContainer.addEventListener('touchend', () => {
+                // 手指抬起时，如果计时器还在（说明时间不够长），则取消它
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
+            historyListContainer.addEventListener('touchcancel', () => {
+                // 触摸被系统取消时，也取消计时器
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
+            // --- 【结束】修改：增强的侧边栏项目事件处理 ---
+
             document.addEventListener('click', (e) => {
                 if (contextMenu.classList.contains('show') && !contextMenu.contains(e.target) && !e.target.closest('.history-item')) {
                     contextMenu.classList.remove('show');
