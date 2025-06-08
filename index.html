@@ -7,7 +7,7 @@
     <link rel="icon" href="icons/icon-192x192.jpg" type="image/jpg">
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4d6bfe">
+    <meta name="theme-color" content="#ffffff">
 
     <style>
         :root {
@@ -166,7 +166,7 @@
         .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 0; }
         .dp-month-year { font-weight: 600; font-size: 1.1em; color: var(--text-primary); }
         .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: 1px solid var(--border-color); width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 8px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; 
-            touch-action: manipulation; /* 【新增】防止在移动设备上双击缩放 */
+            touch-action: manipulation;
         }
         .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
         .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
@@ -1007,6 +1007,27 @@
         }
 
         // --- Event Handlers & Initialization ---
+        function setupThemeColorSync() {
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (!themeColorMeta) {
+                console.warn('Theme color meta tag not found.');
+                return;
+            }
+
+            const lightThemeColor = '#ffffff';
+            const darkThemeColor = '#292a2d';
+
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            const updateThemeColor = () => {
+                const newColor = darkModeMediaQuery.matches ? darkThemeColor : lightThemeColor;
+                themeColorMeta.setAttribute('content', newColor);
+            };
+
+            updateThemeColor();
+            darkModeMediaQuery.addEventListener('change', updateThemeColor);
+        }
+
         function setupEventHandlers() {
             sidebarToggleButton.addEventListener('click', () => {
                 appWrapper.classList.toggle('sidebar-collapsed');
@@ -1044,16 +1065,12 @@
                     userInput.placeholder = GAME_MODES[currentGameMode].placeholder;
                 }
             });
-
-
-            // 辅助函数：用于显示上下文菜单并处理边界
             const showContextMenu = (target, x, y) => {
                 contextMenuTarget = target;
                 closeDropdown();
                 datePickerPopover.classList.remove('show');
 
                 requestAnimationFrame(() => {
-                    // 确保菜单不会超出视窗
                     const menuWidth = contextMenu.offsetWidth || 160;
                     const menuHeight = contextMenu.offsetHeight || 100;
                     const viewWidth = window.innerWidth;
@@ -1068,7 +1085,6 @@
                 });
             };
 
-            // PC端：保留原有的右键 `contextmenu` 事件
             historyListContainer.addEventListener('contextmenu', (e) => {
                 const target = e.target.closest('.history-item');
                 if (target) {
@@ -1077,7 +1093,6 @@
                 }
             });
 
-            // 移动端：实现自定义长按逻辑
             let longPressTimer = null;
             let touchStartX = 0;
             let touchStartY = 0;
@@ -1087,18 +1102,14 @@
                 if (target) {
                     touchStartX = e.touches[0].clientX;
                     touchStartY = e.touches[0].clientY;
-
-                    // 设置一个500毫秒的计时器来检测长按
                     longPressTimer = setTimeout(() => {
-                        // 计时器触发，判定为长按
-                        longPressTimer = null; // 清除计时器ID
+                        longPressTimer = null;
                         showContextMenu(target, e.touches[0].clientX, e.touches[0].clientY);
                     }, 500);
                 }
-            }, { passive: true }); // 使用 passive: true 因为我们不在touchstart中立即阻止默认行为
+            }, { passive: true });
 
             historyListContainer.addEventListener('touchmove', (e) => {
-                // 如果手指移动超过一个微小阈值，则判定为滑动，取消长按
                 const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
                 const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
                 if (longPressTimer && (deltaX > 10 || deltaY > 10)) {
@@ -1108,7 +1119,6 @@
             });
 
             historyListContainer.addEventListener('touchend', () => {
-                // 手指抬起时，如果计时器还在（说明时间不够长），则取消它
                 if (longPressTimer) {
                     clearTimeout(longPressTimer);
                     longPressTimer = null;
@@ -1116,7 +1126,6 @@
             });
 
             historyListContainer.addEventListener('touchcancel', () => {
-                // 触摸被系统取消时，也取消计时器
                 if (longPressTimer) {
                     clearTimeout(longPressTimer);
                     longPressTimer = null;
@@ -1173,6 +1182,8 @@
         }
 
         async function initializeApp() {
+            setupThemeColorSync();
+
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js')
