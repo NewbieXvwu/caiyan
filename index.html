@@ -6,9 +6,7 @@
     <title>猜盐</title>
     <link rel="icon" href="icons/icon-192x192.jpg" type="image/jpg">
     
-    <!-- 链接 Web App Manifest 文件 -->
     <link rel="manifest" href="manifest.json">
-    <!-- 设置浏览器 UI 的主题颜色 (尤其在移动端) -->
     <meta name="theme-color" content="#4d6bfe">
 
     <style>
@@ -45,16 +43,8 @@
                 --modal-cancel-btn-bg: #4b5563;
                 --modal-error-bg: rgba(60, 45, 45, 0.75);
             }
-
-            /* --- 自定义深色模式滚动条样式 --- */
-            * {
-                scrollbar-width: thin;
-                scrollbar-color: var(--modal-cancel-btn-bg) var(--main-bg);
-            }
-            ::-webkit-scrollbar { width: 8px; height: 8px; }
-            ::-webkit-scrollbar-track { background: var(--main-bg); }
-            ::-webkit-scrollbar-thumb { background-color: var(--modal-cancel-btn-bg); border-radius: 4px; border: 2px solid var(--main-bg); }
-            ::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+            * { scrollbar-width: thin; scrollbar-color: var(--modal-cancel-btn-bg) var(--main-bg); }
+            ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: var(--main-bg); } ::-webkit-scrollbar-thumb { background-color: var(--modal-cancel-btn-bg); border-radius: 4px; border: 2px solid var(--main-bg); } ::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
         }
 
         html, body { position: relative; height: 100%; width: 100%; overflow: hidden; overscroll-behavior: none; }
@@ -79,18 +69,8 @@
         #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin: 0; }
         #app-wrapper.sidebar-collapsed #sidebar-toggle-button { margin: 0; }
         #app-wrapper.sidebar-collapsed #history-list-container { display: none; }
-        #context-menu {
-            position: absolute; z-index: 1000; background-color: var(--context-menu-bg);
-            border-radius: 8px; padding: 6px; box-shadow: var(--context-menu-shadow);
-            border: 1px solid var(--border-color); min-width: 160px;
-            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
-            opacity: 0; visibility: hidden; transform: scale(0.95);
-            transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s, backdrop-filter 0.1s ease-out;
-        }
-        #context-menu.show {
-            opacity: 1; visibility: visible; transform: scale(1);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-        }
+        #context-menu { position: absolute; z-index: 1000; background-color: var(--context-menu-bg); border-radius: 8px; padding: 6px; box-shadow: var(--context-menu-shadow); border: 1px solid var(--border-color); min-width: 160px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transform: scale(0.95); transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s; }
+        #context-menu.show { opacity: 1; visibility: visible; transform: scale(1); }
         .context-menu-item { position: relative; z-index: 1; display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--sidebar-text); overflow: hidden; }
         .context-menu-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
         .context-menu-item:hover::before { opacity: 1; }
@@ -98,18 +78,8 @@
         .context-menu-icon { margin-right: 12px; width: 16px; height: 16px; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay-bg); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s; }
         .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-dialog {
-            background-color: var(--modal-bg);
-            padding: 24px; border-radius: 12px; box-shadow: var(--context-menu-shadow);
-            width: 90%; max-width: 400px; border: 1px solid var(--border-color);
-            transform: scale(0.95);
-            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
-            transition: transform 0.2s ease, backdrop-filter 0.2s ease;
-        }
-        .modal-overlay.show .modal-dialog {
-            transform: scale(1);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        }
+        .modal-dialog { background-color: var(--modal-bg); padding: 24px; border-radius: 12px; box-shadow: var(--context-menu-shadow); width: 90%; max-width: 400px; border: 1px solid var(--border-color); transform: scale(0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.2s ease; }
+        .modal-overlay.show .modal-dialog { transform: scale(1); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .modal-header h2 { margin: 0; font-size: 1.1em; font-weight: 600; color: var(--text-primary); }
         .modal-header .close-btn { background: none; border: none; font-size: 1.5em; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1; }
@@ -120,25 +90,30 @@
         .modal-footer .cancel-btn { background-color: var(--modal-cancel-btn-bg); color: var(--text-primary); }
         .modal-footer .confirm-btn { background-color: var(--error-color); color: white; }
         .modal-footer .confirm-btn.import { background-color: var(--accent-color); }
-        
-        #error-modal .modal-dialog {
-            background-color: var(--modal-error-bg);
-        }
-        .modal-footer .confirm-btn.error {
-            background-color: var(--modal-error-btn-bg);
-            color: white;
-        }
-
+        #error-modal .modal-dialog { background-color: var(--modal-error-bg); }
+        .modal-footer .confirm-btn.error { background-color: var(--modal-error-btn-bg); color: white; }
         #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%;}
         #chat-window, header, #input-area { transition: background-color 0.2s, border-color 0.2s; }
         header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
         #mobile-menu-toggle { display: none; position: absolute; left: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); }
-        .title-container { display: flex; align-items: center; margin: 0 auto; }
+        .title-container { display: flex; align-items: center; gap: 12px; margin: 0 auto; position: relative; }
         .title-container h1 { margin: 0; font-size: 1.2em; color: var(--text-primary); }
         .header-actions { display: flex; align-items: center; gap: 8px; position: absolute; right: 15px; }
         .header-action-btn { padding: 0; width: 28px; height: 28px; border: 1px solid var(--border-color); background-color: transparent; color: var(--text-secondary); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .header-action-btn:hover { background-color: var(--history-item-hover-bg); }
         .header-action-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        
+        .date-picker-trigger {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 4px 10px;
+            background-color: transparent; border: 1px solid var(--border-color);
+            border-radius: 6px; font-size: 0.9em; font-weight: 500;
+            color: var(--text-secondary); cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .date-picker-trigger:hover { background-color: var(--history-item-hover-bg); }
+        .date-picker-trigger svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+        
         #chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: var(--chat-window-bg); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; min-height: 0; display: flex; flex-direction: column; }
         .message { display: flex; margin-bottom: 15px; animation: fadeIn 0.5s ease-in-out; }
         .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 18px; word-wrap: break-word; line-height: 1.4; }
@@ -152,27 +127,8 @@
         #user-input::placeholder { color: var(--text-secondary); }
         #user-input:focus { border-color: var(--accent-color); }
         #user-input:disabled { background-color: var(--ai-msg-bg); cursor: not-allowed; }
-        #send-button {
-            margin-left: 10px;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            border: none;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s, opacity 0.3s;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #send-button svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
+        #send-button { margin-left: 10px; padding: 0; width: 40px; height: 40px; border: none; background-color: var(--accent-color); color: white; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, opacity 0.3s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        #send-button svg { width: 20px; height: 20px; fill: currentColor; }
         #send-button:hover:not(:disabled) { opacity: 0.85; }
         #send-button:disabled { background-color: var(--accent-color); opacity: 0.5; cursor: not-allowed; }
         #sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 999; }
@@ -181,24 +137,43 @@
         .select-selected:hover { background-color: var(--ai-msg-bg); }
         .select-arrow { margin-left: 6px; width: 16px; height: 16px; fill: currentColor; transition: transform 0.2s ease; }
         .select-selected.select-arrow-active .select-arrow { transform: rotate(180deg); }
-        .select-items {
-            list-style: none; padding: 6px; margin: 0;
-            position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%);
-            background-color: var(--context-menu-bg);
-            border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--context-menu-shadow);
-            min-width: 100px; text-align: center; z-index: 99;
-            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s, backdrop-filter 0.1s ease-out;
-            transform-origin: top center;
-        }
-        .select-items.show {
-            opacity: 1; visibility: visible;
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-        }
+        .select-items { list-style: none; padding: 6px; margin: 0; position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); background-color: var(--context-menu-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--context-menu-shadow); min-width: 100px; text-align: center; z-index: 1101; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s; }
+        .select-items.show { opacity: 1; visibility: visible; }
         .select-item { color: var(--sidebar-text); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; position: relative; overflow: hidden; }
         .select-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
         .select-item:hover::before { opacity: 1; }
+
+        /* --- 日期选择器样式 --- */
+        #date-picker-popover {
+            position: absolute; top: calc(100% + 10px); 
+            left: 0; 
+            transform: scale(0.95); z-index: 1100;
+            background-color: var(--context-menu-bg); border-radius: 12px;
+            padding: 12px 16px 16px; box-shadow: var(--context-menu-shadow);
+            border: 1px solid var(--border-color); width: 300px;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            user-select: none; opacity: 0; visibility: hidden;
+            transform-origin: top center;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        }
+        #date-picker-popover.show { opacity: 1; visibility: visible; transform: scale(1); }
+        .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 0; }
+        .dp-month-year { font-weight: 600; font-size: 1.1em; color: var(--text-primary); }
+        .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: 1px solid var(--border-color); width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 8px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; }
+        .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
+        .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+        #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; }
+        .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; }
+        .dp-grid-wrapper { position: relative; overflow: hidden; height: 236px; }
+        .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .dp-day { display: flex; justify-content: center; align-items: center; height: 36px; border-radius: 50%; font-size: 0.9em; border: 1px solid transparent; color: var(--text-primary); transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+        .dp-day.other-month { color: var(--text-secondary); }
+        .dp-day.disabled { pointer-events: none; opacity: 0.5; }
+        .dp-day.available { cursor: pointer; }
+        .dp-day.available:hover { background-color: var(--history-item-hover-bg); }
+        .dp-day.today { border-color: var(--accent-color); }
+        .dp-day.selected { background-color: var(--accent-color); color: white !important; border-color: var(--accent-color); font-weight: bold; }
+        .dp-day.selected:hover { opacity: 0.9; background-color: var(--accent-color); }
 
         @media (max-width: 768px) {
             #sidebar { position: fixed; top: 0; left: -260px; height: 100%; z-index: 1000; transition: left 0.3s ease-in-out; border-right: 1px solid var(--border-color); }
@@ -217,6 +192,11 @@
             header { padding-top: calc(10px + env(safe-area-inset-top)); }
             #input-area { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
             .header-actions { position: absolute; right: 15px; margin-left: 0; }
+            
+            .date-picker-trigger { padding: 4px; width: 28px; height: 28px; }
+            .date-picker-trigger #daily-puzzle-label { display: none; }
+            #date-picker-popover { left: 50%; transform: translateX(-50%) scale(0.95); width: calc(100vw - 20px); max-width: 320px; }
+            #date-picker-popover.show { transform: translateX(-50%) scale(1); }
         }
     </style>
 </head>
@@ -235,7 +215,19 @@
                 <button id="mobile-menu-toggle">☰</button>
                 <div class="title-container">
                     <h1>猜盐 - </h1>
-                    <div id="game-mode-dropdown" class="custom-select-wrapper">
+                    <div id="game-mode-dropdown" class="custom-select-wrapper"></div>
+                    <button id="daily-puzzle-button" class="date-picker-trigger" title="选择往日谜题" style="display: none;">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 8.5v9.25A3.25 3.25 0 0 1 17.75 21H6.25A3.25 3.25 0 0 1 3 17.75V8.5h18ZM7.25 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5ZM12 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm-4.75-4.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm1-7.5A3.25 3.25 0 0 1 21 6.25V7H3v-.75A3.25 3.25 0 0 1 6.25 3h11.5Z" fill="currentColor"/></svg>
+                        <span id="daily-puzzle-label">选择日期</span>
+                    </button>
+                    <div id="date-picker-popover">
+                        <div class="dp-header">
+                            <button id="dp-prev-month" class="dp-nav-btn" title="上个月">&lt;</button>
+                            <div id="dp-month-year" class="dp-month-year"></div>
+                            <button id="dp-next-month" class="dp-nav-btn" title="下个月">&gt;</button>
+                        </div>
+                        <div id="dp-weekdays-container"></div>
+                        <div class="dp-grid-wrapper"></div>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -265,27 +257,15 @@
     </div>
     
     <div class="modal-overlay" id="confirm-modal">
-        <div class="modal-dialog">
-            <div class="modal-header"><h2 id="confirm-modal-title">永久删除对话</h2><button class="close-btn" id="confirm-modal-close-btn">×</button></div>
-            <div class="modal-body"><p id="confirm-modal-message">删除后，该对话将不可恢复。确认删除吗？</p></div>
-            <div class="modal-footer"><button class="cancel-btn" id="confirm-modal-cancel-btn">取消</button><button class="confirm-btn" id="confirm-modal-confirm-btn">删除</button></div>
-        </div>
+        <div class="modal-dialog"><div class="modal-header"><h2 id="confirm-modal-title">永久删除对话</h2><button class="close-btn" id="confirm-modal-close-btn">×</button></div><div class="modal-body"><p id="confirm-modal-message">删除后，该对话将不可恢复。确认删除吗？</p></div><div class="modal-footer"><button class="cancel-btn" id="confirm-modal-cancel-btn">取消</button><button class="confirm-btn" id="confirm-modal-confirm-btn">删除</button></div></div>
     </div>
 
     <div class="modal-overlay" id="info-modal">
-        <div class="modal-dialog">
-            <div class="modal-header"><h2 id="info-modal-title">提示</h2><button class="close-btn" id="info-modal-close-btn">×</button></div>
-            <div class="modal-body"><p id="info-modal-message"></p></div>
-            <div class="modal-footer"><button class="confirm-btn import" id="info-modal-ok-btn">好的</button></div>
-        </div>
+        <div class="modal-dialog"><div class="modal-header"><h2 id="info-modal-title">提示</h2><button class="close-btn" id="info-modal-close-btn">×</button></div><div class="modal-body"><p id="info-modal-message"></p></div><div class="modal-footer"><button class="confirm-btn import" id="info-modal-ok-btn">好的</button></div></div>
     </div>
 
     <div class="modal-overlay" id="error-modal">
-        <div class="modal-dialog">
-            <div class="modal-header"><h2 id="error-modal-title">错误</h2><button class="close-btn" id="error-modal-close-btn">×</button></div>
-            <div class="modal-body"><p id="error-modal-message"></p></div>
-            <div class="modal-footer"><button class="confirm-btn error" id="error-modal-ok-btn">好的</button></div>
-        </div>
+        <div class="modal-dialog"><div class="modal-header"><h2 id="error-modal-title">错误</h2><button class="close-btn" id="error-modal-close-btn">×</button></div><div class="modal-body"><p id="error-modal-message"></p></div><div class="modal-footer"><button class="confirm-btn error" id="error-modal-ok-btn">好的</button></div></div>
     </div>
 
     <script>
@@ -307,23 +287,24 @@
         const exportButton = document.getElementById('export-button');
         const importButton = document.getElementById('import-button');
         const importFileInput = document.getElementById('import-file-input');
-
-        // 确认模态框元素
+        const dailyPuzzleButton = document.getElementById('daily-puzzle-button');
+        const datePickerPopover = document.getElementById('date-picker-popover');
+        const dpMonthYear = document.getElementById('dp-month-year');
+        const dpPrevMonthBtn = document.getElementById('dp-prev-month');
+        const dpNextMonthBtn = document.getElementById('dp-next-month');
+        const dpWeekdaysContainer = document.getElementById('dp-weekdays-container');
+        const dpGridWrapper = document.querySelector('#date-picker-popover .dp-grid-wrapper');
         const confirmModal = document.getElementById('confirm-modal');
         const confirmModalTitle = document.getElementById('confirm-modal-title');
         const confirmModalMessage = document.getElementById('confirm-modal-message');
         const confirmModalConfirmBtn = document.getElementById('confirm-modal-confirm-btn');
         const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
         const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
-
-        // 信息模态框元素
         const infoModal = document.getElementById('info-modal');
         const infoModalTitle = document.getElementById('info-modal-title');
         const infoModalMessage = document.getElementById('info-modal-message');
         const infoModalOkBtn = document.getElementById('info-modal-ok-btn');
         const infoModalCloseBtn = document.getElementById('info-modal-close-btn');
-
-        // 错误模态框元素
         const errorModal = document.getElementById('error-modal');
         const errorModalTitle = document.getElementById('error-modal-title');
         const errorModalMessage = document.getElementById('error-modal-message');
@@ -332,30 +313,10 @@
         
         // --- App State & Constants ---
         const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun', 'Referer': 'https://xiaoce.fun/guessdisease', 'Fun-Device': 'web', 'Dnt': '1' };
-        
         const GAME_MODES = {
-            disease: {
-                title: '猜病',
-                typeParam: 'guess_disease',
-                apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage',
-                storagePrefix: 'guessDisease_chat_',
-                activeKey: 'activeGuessDiseaseChat',
-                greeting: '你好，医生。',
-                placeholder: '请输入你的提问或诊断…',
-                successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉'
-            },
-            crime: {
-                title: '猜罪',
-                typeParam: 'guess_crime',
-                apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage',
-                storagePrefix: 'guessCrime_chat_',
-                activeKey: 'activeGuessCrimeChat',
-                greeting: '你好，律师。',
-                placeholder: '请输入你的提问或罪名猜测',
-                successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉'
-            }
+            disease: { title: '猜病', typeParam: 'guess_disease', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage', storagePrefix: 'guessDisease_chat_', activeKey: 'activeGuessDiseaseChat', greeting: '你好，医生。', placeholder: '请输入你的提问或诊断…', successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉' },
+            crime: { title: '猜罪', typeParam: 'guess_crime', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage', storagePrefix: 'guessCrime_chat_', activeKey: 'activeGuessCrimeChat', greeting: '你好，律师。', placeholder: '请输入你的提问或罪名猜测', successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉' }
         };
-        
         let currentGameMode = 'disease';
         let chatHistory = [];
         let currentChatKey = null;
@@ -365,23 +326,172 @@
         let contextMenuTarget = null;
         let dailySuccessCount = null;
         let currentVictoryRank = null;
-
-        function getLocalISOString() {
-            const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            const hours = String(d.getHours()).padStart(2, '0');
-            const minutes = String(d.getMinutes()).padStart(2, '0');
-            const seconds = String(d.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        let targetDate = null;
+        let activeDatesCache = {};
+        let dpDisplayDate = new Date();
+        let dpSelectedDate = null;
+        let dpAnimationAbortController = null;
+        
+        // --- 日期和格式化工具 ---
+        function getLocalISOString(date = new Date()) {
+            const d = date;
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
         }
 
-        // --- Core Functions ---
+        function getFormattedDate(date = new Date()) {
+            return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+        }
+        
+        // --- 日期选择器核心逻辑 ---
+        async function fetchActiveDates() {
+            const config = GAME_MODES[currentGameMode];
+            if (activeDatesCache[currentGameMode]) {
+                return activeDatesCache[currentGameMode];
+            }
+            try {
+                const response = await fetch(`https://xiaoce.fun/api/v0/quiz/daily/general/fetchActive?type=${config.typeParam}`, { method: 'GET', headers: BASE_HEADERS });
+                if (!response.ok) throw new Error('API request failed');
+                const result = await response.json();
+                if (result.success && Array.isArray(result.data)) {
+                    const dates = new Set(result.data);
+                    activeDatesCache[currentGameMode] = dates;
+                    return dates;
+                }
+                return new Set();
+            } catch (error) {
+                console.error("获取可选日期失败:", error);
+                await showErrorDialog({ title: '网络错误', message: '无法获取往日谜题列表，请稍后重试。' });
+                return null;
+            }
+        }
+
+        function createCalendarGrid(date, activeDatesSet) {
+            const grid = document.createElement('div');
+            grid.className = 'dp-grid-container';
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const firstDayOfMonth = new Date(year, month, 1);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startDayOfWeek = firstDayOfMonth.getDay();
+            const prevMonth = new Date(year, month, 0);
+            const daysInPrevMonth = prevMonth.getDate();
+            let dateCounter = 1;
+            let nextMonthCounter = 1;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < 42; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'dp-day';
+                let cellDate, isCurrentMonth = false;
+
+                if (i < startDayOfWeek) {
+                    cellDate = new Date(year, month - 1, daysInPrevMonth - startDayOfWeek + i + 1);
+                    dayCell.textContent = cellDate.getDate();
+                } else if (dateCounter <= daysInMonth) {
+                    cellDate = new Date(year, month, dateCounter);
+                    dayCell.textContent = dateCounter;
+                    isCurrentMonth = true;
+                    dateCounter++;
+                } else {
+                    cellDate = new Date(year, month + 1, nextMonthCounter);
+                    dayCell.textContent = nextMonthCounter;
+                    nextMonthCounter++;
+                }
+                const dateApiString = getFormattedDate(cellDate);
+                dayCell.dataset.date = dateApiString;
+
+                if (activeDatesSet.has(dateApiString) && isCurrentMonth) {
+                    dayCell.classList.add('available');
+                } else {
+                    dayCell.classList.add('disabled');
+                }
+                if (!isCurrentMonth) {
+                    dayCell.classList.add('other-month');
+                }
+                if (cellDate.getTime() === today.getTime()) {
+                    dayCell.classList.add('today');
+                }
+                if (dpSelectedDate && cellDate.getTime() === dpSelectedDate.getTime()) {
+                    dayCell.classList.add('selected');
+                }
+                grid.appendChild(dayCell);
+            }
+            return grid;
+        }
+
+        function updateNavButtonStates(activeDatesSet) {
+            const sortedDates = [...activeDatesSet].sort();
+            if (sortedDates.length === 0) {
+                dpPrevMonthBtn.disabled = true;
+                dpPrevMonthBtn.classList.add('disabled');
+                dpNextMonthBtn.disabled = true;
+                dpNextMonthBtn.classList.add('disabled');
+                return;
+            };
+            const firstAvailableDateStr = sortedDates[0];
+            const minMonthDate = new Date(parseInt(firstAvailableDateStr.substring(0, 4), 10), parseInt(firstAvailableDateStr.substring(4, 6), 10) - 1, 1);
+            const today = new Date();
+            const maxMonthDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            const currentMonthStart = new Date(dpDisplayDate.getFullYear(), dpDisplayDate.getMonth(), 1);
+            
+            const isPrevDisabled = currentMonthStart.getTime() <= minMonthDate.getTime();
+            dpPrevMonthBtn.disabled = isPrevDisabled;
+            dpPrevMonthBtn.classList.toggle('disabled', isPrevDisabled);
+
+            const isNextDisabled = currentMonthStart.getTime() >= maxMonthDate.getTime();
+            dpNextMonthBtn.disabled = isNextDisabled;
+            dpNextMonthBtn.classList.toggle('disabled', isNextDisabled);
+        }
+
+        function transitionToMonth(direction, activeDatesSet) {
+            if (direction === 'prev' && dpPrevMonthBtn.disabled) return;
+            if (direction === 'next' && dpNextMonthBtn.disabled) return;
+
+            if (dpAnimationAbortController) {
+                dpAnimationAbortController.abort();
+            }
+            dpAnimationAbortController = new AbortController();
+            const signal = dpAnimationAbortController.signal;
+            
+            const existingGrids = dpGridWrapper.querySelectorAll('.dp-grid-container');
+            let oldGrid = existingGrids.length > 0 ? existingGrids[existingGrids.length - 1] : null;
+            
+            if (existingGrids.length > 1) {
+                existingGrids[0].remove();
+            }
+
+            dpDisplayDate.setMonth(dpDisplayDate.getMonth() + (direction === 'next' ? 1 : -1));
+            const newGrid = createCalendarGrid(dpDisplayDate, activeDatesSet);
+            
+            newGrid.style.transition = 'none';
+            newGrid.style.transform = `translateX(${direction === 'next' ? '100%' : '-100%'})`;
+            dpGridWrapper.appendChild(newGrid);
+            
+            newGrid.offsetHeight; 
+
+            const transitionStyle = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            newGrid.style.transition = transitionStyle;
+            if (oldGrid) oldGrid.style.transition = transitionStyle;
+
+            if (oldGrid) {
+                oldGrid.style.transform = `translateX(${direction === 'next' ? '-100%' : '100%'})`;
+            }
+            newGrid.style.transform = 'translateX(0)';
+
+            newGrid.addEventListener('transitionend', () => {
+                if (oldGrid) oldGrid.remove();
+            }, { signal });
+
+            dpMonthYear.textContent = `${dpDisplayDate.getFullYear()}年 ${dpDisplayDate.getMonth() + 1}月`;
+            updateNavButtonStates(activeDatesSet);
+        }
+        
+        // --- 核心功能函数 ---
         function scrollToBottom() {
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
-
         function renderMessage({ text, sender, type }) {
             const messageDiv = document.createElement('div');
             messageDiv.className = sender === 'system' ? `system-message ${type}` : `message ${sender}-message`;
@@ -396,7 +506,6 @@
             chatWindow.appendChild(messageDiv);
             scrollToBottom();
         }
-
         function setInputState(enabled, placeholderText = "") {
             userInput.disabled = !enabled;
             sendButton.disabled = !enabled;
@@ -410,24 +519,17 @@
             const config = GAME_MODES[currentGameMode];
             try {
                 const existingData = JSON.parse(localStorage.getItem(currentChatKey) || '{}');
-                const dataToSave = {
-                    ...existingData,
-                    messages: chatHistory,
-                    chatId: chatId,
-                    isGameActive: isGameActive,
-                    victoryRank: currentVictoryRank,
-                };
+                const dataToSave = { ...existingData, messages: chatHistory, chatId: chatId, isGameActive: isGameActive, victoryRank: currentVictoryRank };
                 if (firstUserMessage) {
                     dataToSave.title = firstUserMessage.length > 28 ? firstUserMessage.substring(0, 28) + '...' : firstUserMessage;
                 }
                 localStorage.setItem(currentChatKey, JSON.stringify(dataToSave));
-                
                 if (firstUserMessage) {
                     localStorage.setItem(config.activeKey, currentChatKey);
                 }
                 populateSidebar();
             } catch (error) {
-                console.error("保存聊天记录失败，可能是磁盘空间已满或浏览器限制:", error);
+                console.error("保存聊天记录失败:", error);
                 await showErrorDialog({ title: '保存失败', message: '无法保存聊天记录。请检查浏览器设置或磁盘空间。' });
             }
         }
@@ -442,16 +544,16 @@
             try {
                 const data = JSON.parse(savedData);
                 currentChatKey = keyToLoad;
+                targetDate = null;
+                dpSelectedDate = null; // 加载旧对话时，也重置日历选择
                 localStorage.setItem(config.activeKey, keyToLoad); 
                 chatHistory = data.messages || [];
                 chatId = data.chatId || "";
                 isGameActive = typeof data.isGameActive === 'boolean' ? data.isGameActive : false;
                 currentVictoryRank = data.victoryRank || null;
-
                 chatWindow.innerHTML = '';
                 renderMessage({ text: config.greeting, sender: 'ai' });
                 chatHistory.forEach(msg => renderMessage(msg));
-                
                 if (isGameActive) {
                     const puzzleDate = keyToLoad.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
                     dailySuccessCount = await fetchSuccessCount(puzzleDate);
@@ -465,36 +567,46 @@
             }
         }
         
-        async function startNewChat() {
+        async function startNewChat(selectedDate = null) {
             const config = GAME_MODES[currentGameMode];
             currentChatKey = null;
-            chatHistory = [];
             chatId = "";
             isGameActive = true;
             currentVictoryRank = null;
             localStorage.setItem(config.activeKey, 'new');
-            
             chatWindow.innerHTML = '';
+            
+            targetDate = selectedDate;
+            
             renderMessage({ text: config.greeting, sender: 'ai' });
             
+            if (selectedDate) {
+                dailySuccessCount = await fetchSuccessCount(selectedDate.replace(/-/g, ''));
+            } else {
+                dailySuccessCount = await fetchSuccessCount();
+            }
+            
             populateSidebar();
-            
-            dailySuccessCount = await fetchSuccessCount();
             updateUIForLoadedChat();
-            
             if (isMobile) {
                 document.body.classList.remove('sidebar-open');
             }
         }
+
+        function updateCalendarButtonVisibility() {
+            const isNewChat = currentChatKey === null;
+            dailyPuzzleButton.style.display = isNewChat ? 'flex' : 'none';
+        }
         
         function updateUIForLoadedChat() {
+            updateCalendarButtonVisibility();
             const config = GAME_MODES[currentGameMode];
             let placeholder = "";
             if (isGameActive) {
                 placeholder = config.placeholder;
+                const isNewChat = currentChatKey === null;
                 if (!isMobile && dailySuccessCount !== null) {
-                    const isNewChat = currentChatKey === null;
-                    const dayText = isNewChat ? '今日' : '该日';
+                    const dayText = isNewChat && !targetDate ? '今日' : '该日';
                     placeholder += ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
                 }
             } else {
@@ -505,7 +617,6 @@
                 }
             }
             setInputState(isGameActive, placeholder);
-
             document.querySelectorAll('.history-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.key === currentChatKey);
             });
@@ -513,38 +624,16 @@
                 userInput.focus();
             }
         }
-
-        function getFormattedDate(date = new Date()) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}${month}${day}`;
-        }
         
         async function fetchSuccessCount(puzzleDateStr = null) {
             const config = GAME_MODES[currentGameMode];
-            let dateForApi;
-
-            if (puzzleDateStr) {
-                dateForApi = puzzleDateStr.replace(/-/g, '');
-            } else {
-                dateForApi = getFormattedDate();
-            }
-            
+            let dateForApi = puzzleDateStr ? puzzleDateStr.replace(/-/g, '') : getFormattedDate();
             const url = `https://xiaoce.fun/api/v0/quiz/daily/getStatus?type=${config.typeParam}&date=${dateForApi}`;
             try {
                 const response = await fetch(url, { method: 'GET', headers: BASE_HEADERS });
-                if (!response.ok) {
-                    console.warn(`获取成功人数失败 (HTTP ${response.status})`);
-                    return null;
-                }
+                if (!response.ok) return null;
                 const data = await response.json();
-                if (data.success && data.data && typeof data.data.success !== 'undefined') {
-                    return data.data.success;
-                } else {
-                    console.warn("API返回成功，但数据格式不正确", data);
-                    return null;
-                }
+                return (data.success && data.data) ? data.data.success : null;
             } catch (error) {
                 console.error("获取成功人数时发生网络错误:", error);
                 return null;
@@ -556,44 +645,36 @@
             if (!messageText || !isGameActive) return;
             const config = GAME_MODES[currentGameMode];
             const isFirstMessage = (currentChatKey === null);
+            let puzzleDateForApi;
+
             if (isFirstMessage) {
-                currentChatKey = config.storagePrefix + getLocalISOString();
+                const baseDate = targetDate ? new Date(targetDate + "T12:00:00") : new Date();
+                currentChatKey = config.storagePrefix + getLocalISOString(baseDate);
+                puzzleDateForApi = targetDate ? targetDate.replace(/-/g, '') : getFormattedDate();
+            } else {
+                puzzleDateForApi = currentChatKey.substring(config.storagePrefix.length, config.storagePrefix.length + 10).replace(/-/g, '');
             }
             
-            const puzzleDateForApi = currentChatKey.substring(config.storagePrefix.length, config.storagePrefix.length + 10).replace(/-/g, '');
-
             chatHistory.push({ text: messageText, sender: 'user' });
             renderMessage({ text: messageText, sender: 'user' });
             userInput.value = '';
             setInputState(false, "AI思考中...");
 
             try {
-                const response = await fetch(config.apiUrl, {
-                    method: 'POST',
-                    headers: { ...BASE_HEADERS, 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-                    body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}`
-                });
+                const response = await fetch(config.apiUrl, { method: 'POST', headers: { ...BASE_HEADERS, 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}` });
                 const data = await response.json();
-                if (!response.ok || !data.success) {
-                    throw new Error(data.message || `请求失败，状态码: ${response.status}`);
-                }
-                
+                if (!response.ok || !data.success) throw new Error(data.message || `请求失败: ${response.status}`);
                 const d = data.data || {};
                 if (d.chatId) chatId = d.chatId;
-                
                 const aiMessage = { text: d.answer || "我不知道该怎么回答。", sender: 'ai' };
                 chatHistory.push(aiMessage);
                 renderMessage(aiMessage);
-                
                 if (d.right) {
                     isGameActive = false;
                     const successMsg = { text: config.successMessage, sender: 'system', type: 'success'};
                     chatHistory.push(successMsg);
                     renderMessage(successMsg);
-                    
-                    const puzzleDate = currentChatKey.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
-                    dailySuccessCount = await fetchSuccessCount(puzzleDate);
-                    currentVictoryRank = dailySuccessCount;
+                    currentVictoryRank = await fetchSuccessCount(puzzleDateForApi);
                 }
                 updateUIForLoadedChat(); 
             } catch (error) {
@@ -606,70 +687,46 @@
                 userInput.value = messageText;
                 setInputState(true, "发生错误，请重试");
             } finally {
-                saveHistory(isFirstMessage ? messageText : null);
+                await saveHistory(isFirstMessage ? messageText : null);
                 if (!isMobile) userInput.focus();
             }
         }
 
-        // --- Browser Compatibility Check ---
         async function checkBrowserCompatibility() {
-            // 如果会话中已经记录显示过警告，则直接返回
             if (sessionStorage.getItem('browserVersionWarningShown') === 'true') {
                 return;
             }
-
-            // 定义一个函数来检测特定的CSS功能
             const isFeatureSupported = () => {
                 const testEl = document.createElement('div');
-                
-                // 1. 检测 Flexbox gap 属性
-                // 现代浏览器支持在flex容器中使用gap
                 testEl.style.display = 'flex';
                 testEl.style.gap = '1px';
                 const isGapSupported = testEl.style.gap === '1px';
-
-                // 2. 检测 backdrop-filter 属性
-                // 这是实现毛玻璃效果的关键，是视觉体验的重要部分
                 const isBackdropSupported = 'backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style;
-
-                // 如果所有“完美支持”所需的功能都存在，则返回 true
                 return isGapSupported && isBackdropSupported;
             };
-
-            // 如果功能不被“完美支持”
             if (!isFeatureSupported()) {
-                // 调用已有的错误模态框
                 await showErrorDialog({
                     title: '浏览器兼容性提示',
                     message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Safari）以获得最佳体验。'
                 });
-                // 在 sessionStorage 中设置一个标志，防止刷新页面时重复提示
                 sessionStorage.setItem('browserVersionWarningShown', 'true');
             }
         }
-
-        // --- UI Helpers ---
         function getRelativeDateGroup(dateStr) {
             const today = new Date();
             const date = new Date(dateStr);
             today.setHours(0, 0, 0, 0);
             date.setHours(0, 0, 0, 0);
-            const diffDays = (today - date) / (1000 * 60 * 60 * 24);
+            const diffDays = (today - date) / 864e5;
             if (diffDays === 0) return "今天";
             if (diffDays === 1) return "昨天";
             if (diffDays < 7) return "7天内";
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         }
-
         function populateSidebar() {
             const config = GAME_MODES[currentGameMode];
             const prefix = config.storagePrefix;
-            const chats = Object.keys(localStorage)
-                .filter(k => k.startsWith(prefix))
-                .map(key => ({ key, data: JSON.parse(localStorage.getItem(key) || '{}') }))
-                .filter(chat => chat.data && chat.data.title)
-                .sort((a, b) => b.key.localeCompare(a.key));
-            
+            const chats = Object.keys(localStorage).filter(k => k.startsWith(prefix)).map(key => ({ key, data: JSON.parse(localStorage.getItem(key) || '{}') })).filter(chat => chat.data && chat.data.title).sort((a, b) => b.key.localeCompare(a.key));
             const groups = {};
             chats.forEach(chat => {
                 const dateStr = chat.key.substring(prefix.length, prefix.length + 10);
@@ -679,7 +736,6 @@
                 }
                 groups[groupName].push(chat);
             });
-            
             historyListContainer.innerHTML = '';
             const groupOrder = ["今天", "昨天", "7天内"];
             const sortedGroupNames = Object.keys(groups).sort((a, b) => {
@@ -690,7 +746,6 @@
                 if (bIndex !== -1) return 1;
                 return b.localeCompare(a);
             });
-            
             sortedGroupNames.forEach(groupName => {
                 const header = document.createElement('div');
                 header.className = 'history-group-header';
@@ -702,13 +757,12 @@
                     li.dataset.key = key;
                     li.innerHTML = `<span>${data.title}</span>`;
                     li.title = data.title;
-                    if(key === currentChatKey) li.classList.add('active');
+                    if (key === currentChatKey) li.classList.add('active');
                     li.addEventListener('click', () => loadChat(key));
                     historyListContainer.appendChild(li);
                 });
             });
         }
-
         function handleRename() {
             if (!contextMenuTarget) return;
             const key = contextMenuTarget.dataset.key;
@@ -721,7 +775,6 @@
             contextMenuTarget.replaceChild(input, titleSpan);
             input.focus();
             input.select();
-            
             const saveRename = () => {
                 const newTitle = input.value.trim();
                 if (newTitle && newTitle !== currentTitle) {
@@ -729,24 +782,21 @@
                         const savedData = JSON.parse(localStorage.getItem(key) || '{}');
                         savedData.title = newTitle;
                         localStorage.setItem(key, JSON.stringify(savedData));
-                    } catch(e) { console.error("重命名失败", e); }
+                    } catch (e) { console.error("重命名失败", e); }
                 }
                 titleSpan.textContent = newTitle || currentTitle;
                 contextMenuTarget.replaceChild(titleSpan, input);
             };
-            
             input.addEventListener('blur', saveRename);
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') input.blur();
                 if (e.key === 'Escape') contextMenuTarget.replaceChild(titleSpan, input);
             });
         }
-        
         function showErrorDialog({ title = '错误', message = '' }) {
             return new Promise(resolve => {
                 errorModalTitle.textContent = title;
                 errorModalMessage.textContent = message;
-
                 let resolver = null;
                 const show = () => { errorModal.classList.add('show'); };
                 const hide = () => {
@@ -758,21 +808,17 @@
                 };
                 const handleAction = () => hide();
                 const handleOverlayClick = (e) => { if (e.target === errorModal) { handleAction(); } };
-                
                 errorModalOkBtn.addEventListener('click', handleAction);
                 errorModalCloseBtn.addEventListener('click', handleAction);
                 errorModal.addEventListener('click', handleOverlayClick);
-                
                 show();
                 resolver = resolve;
             });
         }
-
         function showInfoDialog({ title = '提示', message = '' }) {
             return new Promise(resolve => {
                 infoModalTitle.textContent = title;
                 infoModalMessage.textContent = message;
-
                 let resolver = null;
                 const show = () => { infoModal.classList.add('show'); };
                 const hide = () => {
@@ -784,28 +830,19 @@
                 };
                 const handleAction = () => hide();
                 const handleOverlayClick = (e) => { if (e.target === infoModal) { handleAction(); } };
-                
                 infoModalOkBtn.addEventListener('click', handleAction);
                 infoModalCloseBtn.addEventListener('click', handleAction);
                 infoModal.addEventListener('click', handleOverlayClick);
-                
                 show();
                 resolver = resolve;
             });
         }
-
-        function showConfirmDialog({ 
-            title = '永久删除对话', 
-            message = '删除后，该对话将不可恢复。确认删除吗？', 
-            confirmText = '删除',
-            confirmClass = '' 
-        }) {
+        function showConfirmDialog({ title = '永久删除对话', message = '删除后，该对话将不可恢复。确认删除吗？', confirmText = '删除', confirmClass = '' }) {
             return new Promise(resolve => {
                 confirmModalTitle.textContent = title;
                 confirmModalMessage.textContent = message;
                 confirmModalConfirmBtn.textContent = confirmText;
                 confirmModalConfirmBtn.className = `confirm-btn ${confirmClass}`;
-
                 let resolver = null;
                 const show = () => { confirmModal.classList.add('show'); };
                 const hide = (value) => {
@@ -819,25 +856,18 @@
                 const handleConfirm = () => hide(true);
                 const handleCancel = () => hide(false);
                 const handleOverlayClick = (e) => { if (e.target === confirmModal) { handleCancel(); } };
-                
                 confirmModalConfirmBtn.addEventListener('click', handleConfirm);
                 confirmModalCancelBtn.addEventListener('click', handleCancel);
                 confirmModalCloseBtn.addEventListener('click', handleCancel);
                 confirmModal.addEventListener('click', handleOverlayClick);
-                
                 show();
                 resolver = resolve;
             });
         }
-        
         async function handleDelete() {
             if (!contextMenuTarget) return;
             const key = contextMenuTarget.dataset.key;
-            const confirmed = await showConfirmDialog({
-                title: '永久删除对话',
-                message: '删除后，该对话将不可恢复。确认删除吗？',
-                confirmText: '删除'
-            });
+            const confirmed = await showConfirmDialog({ title: '永久删除对话', message: '删除后，该对话将不可恢复。确认删除吗？', confirmText: '删除' });
             if (confirmed) {
                 localStorage.removeItem(key);
                 populateSidebar();
@@ -846,90 +876,75 @@
                 }
             }
         }
-        
         function createCustomDropdown() {
             const selected = document.createElement('div');
             selected.className = 'select-selected';
-            
             const selectedText = document.createElement('span');
             selectedText.id = 'selected-game-mode-text';
             selectedText.textContent = GAME_MODES[currentGameMode].title;
             selected.appendChild(selectedText);
-
             const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             arrow.setAttribute('class', 'select-arrow');
             arrow.setAttribute('viewBox', '0 0 20 20');
             arrow.innerHTML = `<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />`;
             selected.appendChild(arrow);
-            
             const items = document.createElement('ul');
             items.className = 'select-items';
-            
             Object.keys(GAME_MODES).forEach(key => {
                 const li = document.createElement('li');
                 li.className = 'select-item';
                 li.textContent = GAME_MODES[key].title;
                 li.dataset.value = key;
                 li.addEventListener('click', async function(e) {
-                    // e.stopPropagation(); <-- [BUGFIX] Removed
                     const newMode = this.dataset.value;
                     if (newMode === currentGameMode) {
                         closeDropdown();
                         return;
                     }
-                    
                     selectedText.textContent = this.textContent;
                     closeDropdown();
-                    
                     await handleGameModeChange(newMode);
                 });
                 items.appendChild(li);
             });
-            
             gameModeDropdown.appendChild(selected);
             gameModeDropdown.appendChild(items);
-            
             selected.addEventListener('click', (e) => {
-                // e.stopPropagation(); <-- [BUGFIX] Removed
                 items.classList.toggle('show');
                 selected.classList.toggle('select-arrow-active');
             });
         }
-        
         function closeDropdown() {
             const items = gameModeDropdown.querySelector('.select-items');
             const selected = gameModeDropdown.querySelector('.select-selected');
             if (items && items.classList.contains('show')) {
                 items.classList.remove('show');
-                selected.classList.remove('select-arrow-active');
+                if (selected) {
+                    selected.classList.remove('select-arrow-active');
+                }
             }
         }
-
         async function handleGameModeChange(newMode) {
             currentGameMode = newMode;
             localStorage.setItem('lastGameMode', currentGameMode);
             document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
-            
+            activeDatesCache = {};
             await startNewChat();
         }
-
         async function handleExport() {
             const allData = {};
             const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
             const keysToExport = ['lastGameMode', 'sidebarCollapsedState'];
-
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (keysToExport.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
                     allData[key] = localStorage.getItem(key);
                 }
             }
-
-            if (Object.keys(allData).length <= keysToExport.length) { 
+            if (Object.keys(allData).length <= keysToExport.length) {
                 await showInfoDialog({ title: '导出提示', message: '没有可导出的历史记录。' });
                 return;
             }
-
             const jsonString = JSON.stringify(allData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -941,46 +956,39 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-
         async function handleImport(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const confirmed = await showConfirmDialog({
                 title: '导入历史记录',
                 message: '此操作将覆盖所有本地聊天记录，且不可恢复。确定要导入吗？',
                 confirmText: '导入',
                 confirmClass: 'import'
             });
-
             if (!confirmed) {
                 importFileInput.value = '';
                 return;
             }
-            
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     const importedData = JSON.parse(e.target.result);
                     const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
                     const keysToClear = ['lastGameMode', 'sidebarCollapsedState'];
-
                     const keysToRemove = [];
                     for (let i = 0; i < localStorage.length; i++) {
                         const key = localStorage.key(i);
                         if (keysToClear.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
-                           keysToRemove.push(key);
+                            keysToRemove.push(key);
                         }
                     }
                     keysToRemove.forEach(key => localStorage.removeItem(key));
-                    
                     for (const key in importedData) {
                         if (Object.hasOwnProperty.call(importedData, key)) {
                             localStorage.setItem(key, importedData[key]);
                         }
                     }
                     location.reload();
-
                 } catch (error) {
                     console.error("Import error:", error);
                     await showErrorDialog({ title: '导入失败', message: '文件格式无效或已损坏。' });
@@ -999,27 +1007,29 @@
                 sidebarToggleButton.textContent = isCollapsed ? '›' : '‹';
                 localStorage.setItem('sidebarCollapsedState', isCollapsed);
             });
-
             mobileMenuToggle.addEventListener('click', () => { document.body.classList.add('sidebar-open'); });
             sidebarOverlay.addEventListener('click', () => {
                 document.body.classList.remove('sidebar-open');
                 if (document.activeElement) document.activeElement.blur();
             });
-
-            newChatButton.addEventListener('click', startNewChat);
-            sendButton.addEventListener('click', sendMessage);
             
+            // 修正: 为“开启新对话”按钮添加专门的重置逻辑
+            newChatButton.addEventListener('click', () => {
+                dpSelectedDate = null; // 重置日历组件的已选日期
+                startNewChat(); // 调用startNewChat，不带参数，即开始今天的谜题
+            });
+
+            sendButton.addEventListener('click', sendMessage);
             userInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-            
             userInput.addEventListener('focus', () => {
                 if (isMobile && isGameActive && dailySuccessCount !== null) {
                     const isNewChat = currentChatKey === null;
-                    const dayText = isNewChat ? '今日' : '该日';
+                    const dayText = isNewChat && !targetDate ? '今日' : '该日';
                     userInput.placeholder = `${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
                 }
             });
@@ -1028,14 +1038,13 @@
                     userInput.placeholder = GAME_MODES[currentGameMode].placeholder;
                 }
             });
-
             historyListContainer.addEventListener('contextmenu', (e) => {
                 const target = e.target.closest('.history-item');
                 if (target) {
                     e.preventDefault();
                     contextMenuTarget = target;
                     closeDropdown();
-                    contextMenu.classList.remove('show');
+                    datePickerPopover.classList.remove('show');
                     requestAnimationFrame(() => {
                         contextMenu.style.top = `${e.clientY}px`;
                         contextMenu.style.left = `${e.clientX}px`;
@@ -1043,70 +1052,90 @@
                     });
                 }
             });
-
-            // [BUGFIX] Replaced window listener with a more robust document listener
             document.addEventListener('click', (e) => {
-                // Close context menu if the click is outside
                 if (contextMenu.classList.contains('show') && !contextMenu.contains(e.target) && !e.target.closest('.history-item')) {
                     contextMenu.classList.remove('show');
                 }
-                
-                // Close dropdown if the click is outside
                 if (!gameModeDropdown.contains(e.target)) {
                     closeDropdown();
                 }
+                if (!datePickerPopover.parentElement.contains(e.target)) {
+                    datePickerPopover.classList.remove('show');
+                }
             });
-            
             renameOption.addEventListener('click', handleRename);
             deleteOption.addEventListener('click', handleDelete);
-
             exportButton.addEventListener('click', handleExport);
             importButton.addEventListener('click', () => importFileInput.click());
             importFileInput.addEventListener('change', handleImport);
+            dailyPuzzleButton.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (datePickerPopover.classList.contains('show')) {
+                    datePickerPopover.classList.remove('show');
+                    return;
+                }
+                const activeDatesSet = await fetchActiveDates();
+                if (!activeDatesSet || activeDatesSet.size === 0) return;
+                
+                dpDisplayDate = dpSelectedDate ? new Date(dpSelectedDate.getFullYear(), dpSelectedDate.getMonth(), 1) : new Date();
+                dpGridWrapper.innerHTML = '';
+                dpGridWrapper.appendChild(createCalendarGrid(dpDisplayDate, activeDatesSet));
+                dpMonthYear.textContent = `${dpDisplayDate.getFullYear()}年 ${dpDisplayDate.getMonth() + 1}月`;
+                updateNavButtonStates(activeDatesSet);
+                datePickerPopover.classList.add('show');
+            });
+            dpPrevMonthBtn.addEventListener('click', async () => transitionToMonth('prev', await fetchActiveDates()));
+            dpNextMonthBtn.addEventListener('click', async () => transitionToMonth('next', await fetchActiveDates()));
+            dpGridWrapper.addEventListener('click', (e) => {
+                const target = e.target.closest('.dp-day.available');
+                if (target) {
+                    const dateStr = target.dataset.date;
+                    const year = parseInt(dateStr.substring(0, 4), 10);
+                    const month = parseInt(dateStr.substring(4, 6), 10) - 1;
+                    const day = parseInt(dateStr.substring(6, 8), 10);
+                    dpSelectedDate = new Date(year, month, day);
+                    datePickerPopover.classList.remove('show');
+                    startNewChat(`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+                }
+            });
         }
 
         async function initializeApp() {
-            // 注册 Service Worker
             if ('serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                  .then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                  })
-                  .catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                  });
-              });
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); })
+                        .catch(err => { console.log('ServiceWorker registration failed: ', err); });
+                });
             }
-
-            // 在应用初始化时首先进行浏览器兼容性检查
             await checkBrowserCompatibility();
-
             if (localStorage.getItem('sidebarCollapsedState') === 'true') {
                 appWrapper.classList.add('sidebar-collapsed');
                 sidebarToggleButton.textContent = '›';
             }
-
             const lastMode = localStorage.getItem('lastGameMode');
             if (lastMode && GAME_MODES[lastMode]) {
                 currentGameMode = lastMode;
             }
             document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
-
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            weekdays.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'dp-weekday';
+                dayEl.textContent = day;
+                dpWeekdaysContainer.appendChild(dayEl);
+            });
             createCustomDropdown();
             setupEventHandlers();
             populateSidebar();
-            
             const config = GAME_MODES[currentGameMode];
             const activeChatState = localStorage.getItem(config.activeKey);
-            const prefix = config.storagePrefix;
-
-            if (activeChatState === 'new') {
+            if (activeChatState === 'new' || !activeChatState) {
                 await startNewChat();
             } else if (activeChatState) {
                 await loadChat(activeChatState);
             } else {
-                const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix)).sort().reverse();
+                const keys = Object.keys(localStorage).filter(k => k.startsWith(config.storagePrefix)).sort().reverse();
                 if (keys.length > 0) {
                     await loadChat(keys[0]);
                 } else {
@@ -1117,6 +1146,5 @@
 
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
-    
 </body>
 </html>
