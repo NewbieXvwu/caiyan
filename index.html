@@ -89,7 +89,7 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .modal-header h2 { margin: 0; font-size: 1.1em; font-weight: 600; color: var(--text-primary); }
         .modal-header .close-btn { background: none; border: none; font-size: 1.5em; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1; }
-        .modal-body p { margin: 0 0 24px 0; color: var(--text-secondary); font-size: 0.9em; }
+        .modal-body p { margin: 0 0 12px 0; color: var(--text-secondary); font-size: 0.9em; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
         .modal-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: opacity 0.2s ease; }
         .modal-footer button:hover:not(:disabled) { opacity: 0.85; }
@@ -97,7 +97,68 @@
         .modal-footer .confirm-btn { background-color: var(--error-color); color: white; }
         .modal-footer .confirm-btn.import { background-color: var(--accent-color); }
         #error-modal .modal-dialog { background-color: var(--modal-error-bg); }
+        #browser-warning-modal .modal-dialog { background-color: var(--modal-error-bg); }
         .modal-footer .confirm-btn.error { background-color: var(--modal-error-btn-bg); color: white; }
+        
+        .checkbox-wrapper {
+            margin-top: 20px;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+        .checkbox-visual {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #9ca3af;
+            border-radius: 5px;
+            margin-right: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .checkbox-visual svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out;
+        }
+        .checkbox-visual svg path {
+            stroke-dasharray: 24;
+            stroke-dashoffset: 24;
+            transition: stroke-dashoffset 0.3s ease-out;
+            transition-delay: 0.1s;
+        }
+        .visually-hidden:checked + .checkbox-container .checkbox-visual {
+            background-color: var(--modal-error-btn-bg);
+            border-color: var(--modal-error-btn-bg);
+        }
+        .visually-hidden:checked + .checkbox-container .checkbox-visual svg {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .visually-hidden:checked + .checkbox-container .checkbox-visual svg path {
+            stroke-dashoffset: 0;
+        }
+        .checkbox-container:hover .checkbox-visual {
+            border-color: #6b7280;
+        }
+        .visually-hidden:focus-visible + .checkbox-container .checkbox-visual {
+            box-shadow: 0 0 0 3px rgba(255, 102, 102, 0.4);
+        }
+        
         #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%;}
         #chat-window, header, #input-area { transition: background-color 0.2s, border-color 0.2s; }
         header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -148,6 +209,7 @@
         .select-item { color: var(--sidebar-text); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; position: relative; overflow: hidden; }
         .select-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
         .select-item:hover::before { opacity: 1; }
+        .visually-hidden { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
 
         /* --- 日期选择器样式 --- */
         #date-picker-popover {
@@ -275,6 +337,34 @@
     <div class="modal-overlay" id="error-modal">
         <div class="modal-dialog"><div class="modal-header"><h2 id="error-modal-title">错误</h2><button class="close-btn" id="error-modal-close-btn">×</button></div><div class="modal-body"><p id="error-modal-message"></p></div><div class="modal-footer"><button class="confirm-btn error" id="error-modal-ok-btn">好的</button></div></div>
     </div>
+    
+    <!-- 新增：浏览器兼容性警告模态框 -->
+    <div class="modal-overlay" id="browser-warning-modal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h2 id="browser-warning-title">浏览器兼容性提示</h2>
+                <button class="close-btn" id="browser-warning-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="browser-warning-message"></p>
+                <div class="checkbox-wrapper">
+                    <input class="visually-hidden" type="checkbox" id="dont-show-again-checkbox">
+                    <label class="checkbox-container" for="dont-show-again-checkbox">
+                        <span class="checkbox-visual">
+                            <svg viewBox="0 0 20 20">
+                                <path d="M4 10 L8 14 L16 6"></path>
+                            </svg>
+                        </span>
+                        <span>不再显示此警告</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="confirm-btn error" id="browser-warning-ok-btn">好的</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // --- DOM Elements ---
@@ -318,6 +408,13 @@
         const errorModalMessage = document.getElementById('error-modal-message');
         const errorModalOkBtn = document.getElementById('error-modal-ok-btn');
         const errorModalCloseBtn = document.getElementById('error-modal-close-btn');
+        // 新增：浏览器警告模态框元素
+        const browserWarningModal = document.getElementById('browser-warning-modal');
+        const browserWarningTitle = document.getElementById('browser-warning-title');
+        const browserWarningMessage = document.getElementById('browser-warning-message');
+        const browserWarningOkBtn = document.getElementById('browser-warning-ok-btn');
+        const browserWarningCloseBtn = document.getElementById('browser-warning-close-btn');
+        const dontShowAgainCheckbox = document.getElementById('dont-show-again-checkbox');
         
         // --- App State & Constants ---
         const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun', 'Referer': 'https://xiaoce.fun/guessdisease', 'Fun-Device': 'web', 'Dnt': '1' };
@@ -700,9 +797,15 @@
         }
 
         async function checkBrowserCompatibility() {
+            // 优先检查永久忽略标记
+            if (localStorage.getItem('suppressBrowserWarning') === 'true') {
+                return;
+            }
+            // 然后检查会话忽略标记
             if (sessionStorage.getItem('browserVersionWarningShown') === 'true') {
                 return;
             }
+
             const isFeatureSupported = () => {
                 const testEl = document.createElement('div');
                 testEl.style.display = 'flex';
@@ -711,12 +814,13 @@
                 const isBackdropSupported = 'backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style;
                 return isGapSupported && isBackdropSupported;
             };
+            
             if (!isFeatureSupported()) {
-                await showErrorDialog({
+                // 调用新的、带复选框的警告对话框
+                await showBrowserWarningDialog({
                     title: '浏览器兼容性提示',
                     message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Edge）以获得最佳体验。'
                 });
-                sessionStorage.setItem('browserVersionWarningShown', 'true');
             }
         }
         function getRelativeDateGroup(dateStr) {
@@ -800,6 +904,44 @@
                 if (e.key === 'Escape') contextMenuTarget.replaceChild(titleSpan, input);
             });
         }
+
+        // 新增：浏览器警告对话框函数
+        function showBrowserWarningDialog({ title = '提示', message = '' }) {
+            return new Promise(resolve => {
+                browserWarningTitle.textContent = title;
+                browserWarningMessage.textContent = message;
+                dontShowAgainCheckbox.checked = false; // 每次打开都重置复选框状态
+                let resolver = null;
+
+                const show = () => { browserWarningModal.classList.add('show'); };
+                
+                const hide = () => {
+                    // 核心逻辑：在关闭时检查复选框
+                    if (dontShowAgainCheckbox.checked) {
+                        localStorage.setItem('suppressBrowserWarning', 'true');
+                    }
+                    // 无论如何，都设置会话存储，以便在当前会话中不再显示
+                    sessionStorage.setItem('browserVersionWarningShown', 'true');
+
+                    browserWarningModal.classList.remove('show');
+                    if (resolver) { resolver(); resolver = null; }
+                    browserWarningOkBtn.removeEventListener('click', handleAction);
+                    browserWarningCloseBtn.removeEventListener('click', handleAction);
+                    browserWarningModal.removeEventListener('click', handleOverlayClick);
+                };
+
+                const handleAction = () => hide();
+                const handleOverlayClick = (e) => { if (e.target === browserWarningModal) { handleAction(); } };
+
+                browserWarningOkBtn.addEventListener('click', handleAction);
+                browserWarningCloseBtn.addEventListener('click', handleAction);
+                browserWarningModal.addEventListener('click', handleOverlayClick);
+                
+                show();
+                resolver = resolve;
+            });
+        }
+
         function showErrorDialog({ title = '错误', message = '' }) {
             return new Promise(resolve => {
                 errorModalTitle.textContent = title;
@@ -941,7 +1083,7 @@
         async function handleExport() {
             const allData = {};
             const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
-            const keysToExport = ['lastGameMode', 'sidebarCollapsedState'];
+            const keysToExport = ['lastGameMode', 'sidebarCollapsedState', 'suppressBrowserWarning'];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (keysToExport.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
@@ -981,7 +1123,7 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
-                    const keysToClear = ['lastGameMode', 'sidebarCollapsedState'];
+                    const keysToClear = ['lastGameMode', 'sidebarCollapsedState', 'suppressBrowserWarning'];
                     const keysToRemove = [];
                     for (let i = 0; i < localStorage.length; i++) {
                         const key = localStorage.key(i);
