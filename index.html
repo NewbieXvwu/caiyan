@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>猜盐</title>
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
+    
+    <!-- 链接 Web App Manifest 文件 -->
+    <link rel="manifest" href="manifest.json">
+    <!-- 设置浏览器 UI 的主题颜色 (尤其在移动端) -->
+    <meta name="theme-color" content="#4d6bfe">
+    <!-- PWA MODIFICATION END -->
+
+    <style>
+        :root {
+            /* 浅色模式 */
+            --sidebar-bg: #f9fbff; --main-bg: #ffffff; --chat-window-bg: #ffffff;
+            --text-primary: #1f2937; --text-secondary: #6b7280; --sidebar-text: #374151;
+            --sidebar-group-text: #9ca3af; --border-color: #e5e7eb;
+            --new-chat-btn-bg: #dbe9fe; --new-chat-btn-text: #1e40af; --new-chat-btn-hover-bg: #cfe2fd;
+            --history-item-hover-bg: #eff6fe; --history-item-active-bg: #dbe9fe; --history-item-active-text: #1d4ed8;
+            --user-msg-bg: #0084ff; --user-msg-text: #ffffff; --ai-msg-bg: #f3f4f6; --ai-msg-text: #11182c;
+            --accent-color: #409eff; --error-color: #ef4444; --success-color: #67c23a;
+            --context-menu-bg: rgba(255, 255, 255, 0.7); --context-menu-shadow: 0 4px 12px rgba(0,0,0,0.1); --context-menu-hover-bg: rgba(243, 244, 246, 0.7);
+            --modal-overlay-bg: rgba(0, 0, 0, 0.4); 
+            --modal-bg: rgba(255, 255, 255, 0.7);
+            --modal-cancel-btn-bg: #e5e7eb;
+            --modal-error-bg: rgba(255, 235, 235, 0.7);
+            --modal-error-btn-bg: #FF6666;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sidebar-bg: #212327; --main-bg: #292a2d; --chat-window-bg: #292a2d;
+                --text-primary: #f9fafb; --text-secondary: #9ca3af; --sidebar-text: #d1d5db;
+                --sidebar-group-text: #9ca3af; --border-color: #374151;
+                --new-chat-btn-bg: #4d6bfe; --new-chat-btn-text: #ffffff; --new-chat-btn-hover-bg: #435fe1;
+                --history-item-hover-bg: #333333; --history-item-active-bg: #494949; --history-item-active-text: #f9fafb;
+                --user-msg-bg: #4d6bfe; --user-msg-text: #ffffff; --ai-msg-bg: #374151; --ai-msg-text: #f9fafb;
+                --accent-color: #60a5fa; --error-color: #f87171;
+                --context-menu-bg: rgba(33, 35, 39, 0.7); --context-menu-shadow: 0 4px 12px rgba(0,0,0,0.2); --context-menu-hover-bg: rgba(67, 67, 67, 0.7);
+                --modal-overlay-bg: rgba(0, 0, 0, 0.6); 
+                --modal-bg: rgba(41, 42, 45, 0.7);
+                --modal-cancel-btn-bg: #4b5563;
+                --modal-error-bg: rgba(60, 45, 45, 0.75);
+            }
+
+            /* --- 自定义深色模式滚动条样式 --- */
+            * {
+                scrollbar-width: thin;
+                scrollbar-color: var(--modal-cancel-btn-bg) var(--main-bg);
+            }
+            ::-webkit-scrollbar { width: 8px; height: 8px; }
+            ::-webkit-scrollbar-track { background: var(--main-bg); }
+            ::-webkit-scrollbar-thumb { background-color: var(--modal-cancel-btn-bg); border-radius: 4px; border: 2px solid var(--main-bg); }
+            ::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+        }
+
+        html, body { position: relative; height: 100%; width: 100%; overflow: hidden; overscroll-behavior: none; }
+        body { font-family: var(--font-family); background-color: var(--sidebar-bg); margin: 0; color: var(--text-primary); display: flex; }
+        #app-wrapper { display: flex; width: 100%; height: 100%; }
+        #sidebar { background-color: var(--sidebar-bg); color: var(--sidebar-text); width: 260px; display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.3s ease-in-out; padding: 8px; box-sizing: border-box; }
+        .sidebar-header { padding-bottom: 8px; display: flex; align-items: center; transition: flex-direction 0.3s ease; }
+        #new-chat-button { flex-grow: 1; padding: 10px; border: none; background-color: var(--new-chat-btn-bg); color: var(--new-chat-btn-text); border-radius: 8px; cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; font-weight: 500; display: flex; align-items: center; transition: all 0.2s; }
+        #new-chat-button:hover { background-color: var(--new-chat-btn-hover-bg); }
+        #sidebar-toggle-button { margin-left: 10px; padding: 0; width: 36px; height: 36px; border: 1px solid var(--border-color); background-color: transparent; color: var(--text-secondary); border-radius: 8px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 1.5em; }
+        #sidebar-toggle-button:hover { background-color: var(--history-item-hover-bg); }
+        #history-list-container { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex-grow: 1; }
+        .history-group-header { font-size: 0.75em; color: var(--sidebar-group-text); padding: 16px 12px 4px; font-weight: 500; }
+        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s, color 0.2s; }
+        .history-item:hover { background-color: var(--history-item-hover-bg); }
+        .history-item.active { background-color: var(--history-item-active-bg); color: var(--history-item-active-text); font-weight: 500; }
+        .icon { font-size: 1.5em; display: inline-block; width: 24px; height: 24px; text-align: center; line-height: 24px; margin-right: 12px; }
+        #app-wrapper.sidebar-collapsed #sidebar { width: 68px; }
+        #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: column-reverse; align-items: center; gap: 8px; }
+        #app-wrapper.sidebar-collapsed #new-chat-button { flex-grow: 0; justify-content: center; width: 36px; height: 36px; padding: 0; }
+        #app-wrapper.sidebar-collapsed #new-chat-button span:not(.icon) { display: none; }
+        #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin: 0; }
+        #app-wrapper.sidebar-collapsed #sidebar-toggle-button { margin: 0; }
+        #app-wrapper.sidebar-collapsed #history-list-container { display: none; }
+        #context-menu {
+            position: absolute; z-index: 1000; background-color: var(--context-menu-bg);
+            border-radius: 8px; padding: 6px; box-shadow: var(--context-menu-shadow);
+            border: 1px solid var(--border-color); min-width: 160px;
+            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+            opacity: 0; visibility: hidden; transform: scale(0.95);
+            transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s, backdrop-filter 0.1s ease-out;
+        }
+        #context-menu.show {
+            opacity: 1; visibility: visible; transform: scale(1);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .context-menu-item { position: relative; z-index: 1; display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--sidebar-text); overflow: hidden; }
+        .context-menu-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
+        .context-menu-item:hover::before { opacity: 1; }
+        .context-menu-item.delete { color: var(--error-color); }
+        .context-menu-icon { margin-right: 12px; width: 16px; height: 16px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay-bg); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s; }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-dialog {
+            background-color: var(--modal-bg);
+            padding: 24px; border-radius: 12px; box-shadow: var(--context-menu-shadow);
+            width: 90%; max-width: 400px; border: 1px solid var(--border-color);
+            transform: scale(0.95);
+            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+            transition: transform 0.2s ease, backdrop-filter 0.2s ease;
+        }
+        .modal-overlay.show .modal-dialog {
+            transform: scale(1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .modal-header h2 { margin: 0; font-size: 1.1em; font-weight: 600; color: var(--text-primary); }
+        .modal-header .close-btn { background: none; border: none; font-size: 1.5em; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1; }
+        .modal-body p { margin: 0 0 24px 0; color: var(--text-secondary); font-size: 0.9em; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
+        .modal-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: opacity 0.2s ease; }
+        .modal-footer button:hover:not(:disabled) { opacity: 0.85; }
+        .modal-footer .cancel-btn { background-color: var(--modal-cancel-btn-bg); color: var(--text-primary); }
+        .modal-footer .confirm-btn { background-color: var(--error-color); color: white; }
+        .modal-footer .confirm-btn.import { background-color: var(--accent-color); }
+        
+        #error-modal .modal-dialog {
+            background-color: var(--modal-error-bg);
+        }
+        .modal-footer .confirm-btn.error {
+            background-color: var(--modal-error-btn-bg);
+            color: white;
+        }
+
+        #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%;}
+        #chat-window, header, #input-area { transition: background-color 0.2s, border-color 0.2s; }
+        header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+        #mobile-menu-toggle { display: none; position: absolute; left: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); }
+        .title-container { display: flex; align-items: center; margin: 0 auto; }
+        .title-container h1 { margin: 0; font-size: 1.2em; color: var(--text-primary); }
+        .header-actions { display: flex; align-items: center; gap: 8px; position: absolute; right: 15px; }
+        .header-action-btn { padding: 0; width: 28px; height: 28px; border: 1px solid var(--border-color); background-color: transparent; color: var(--text-secondary); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .header-action-btn:hover { background-color: var(--history-item-hover-bg); }
+        .header-action-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        #chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: var(--chat-window-bg); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; min-height: 0; display: flex; flex-direction: column; }
+        .message { display: flex; margin-bottom: 15px; animation: fadeIn 0.5s ease-in-out; }
+        .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 18px; word-wrap: break-word; line-height: 1.4; }
+        .ai-message { justify-content: flex-start; } .ai-message .message-bubble { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); border-bottom-left-radius: 4px; }
+        .user-message { justify-content: flex-end; } .user-message .message-bubble { background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; }
+        .system-message { text-align: center; margin: 15px 0; font-size: 0.9em; color: var(--text-secondary); }
+        .system-message.success { color: var(--success-color); font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #input-area { display: flex; padding: 15px; border-top: 1px solid var(--border-color); background-color: var(--main-bg); flex-shrink: 0; align-items: center; }
+        #user-input { flex-grow: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; font-size: 16px; outline: none; transition: border-color 0.3s; background-color: var(--main-bg); color: var(--text-primary); }
+        #user-input::placeholder { color: var(--text-secondary); }
+        #user-input:focus { border-color: var(--accent-color); }
+        #user-input:disabled { background-color: var(--ai-msg-bg); cursor: not-allowed; }
+        #send-button {
+            margin-left: 10px;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #send-button svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        #send-button:hover:not(:disabled) { opacity: 0.85; }
+        #send-button:disabled { background-color: var(--accent-color); opacity: 0.5; cursor: not-allowed; }
+        #sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 999; }
+        .custom-select-wrapper { position: relative; display: inline-block; user-select: none; }
+        .select-selected { color: var(--text-primary); font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; padding: 2px 4px; border-radius: 6px; transition: background-color 0.2s; }
+        .select-selected:hover { background-color: var(--ai-msg-bg); }
+        .select-arrow { margin-left: 6px; width: 16px; height: 16px; fill: currentColor; transition: transform 0.2s ease; }
+        .select-selected.select-arrow-active .select-arrow { transform: rotate(180deg); }
+        .select-items {
+            list-style: none; padding: 6px; margin: 0;
+            position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+            background-color: var(--context-menu-bg);
+            border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--context-menu-shadow);
+            min-width: 100px; text-align: center; z-index: 99;
+            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s, backdrop-filter 0.1s ease-out;
+            transform-origin: top center;
+        }
+        .select-items.show {
+            opacity: 1; visibility: visible;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .select-item { color: var(--sidebar-text); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; position: relative; overflow: hidden; }
+        .select-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
+        .select-item:hover::before { opacity: 1; }
+
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; top: 0; left: -260px; height: 100%; z-index: 1000; transition: left 0.3s ease-in-out; border-right: 1px solid var(--border-color); }
+            body.sidebar-open #sidebar { left: 0; }
+            body.sidebar-open #sidebar-overlay { display: block; }
+            #sidebar-toggle-button { display: none; }
+            #mobile-menu-toggle { display: block; }
+            #app-wrapper.sidebar-collapsed #sidebar { width: 260px; }
+            #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: row; align-items: center; gap: 0; }
+            #app-wrapper.sidebar-collapsed #new-chat-button { width: auto; height: auto; padding: 10px; flex-grow: 1; }
+            #app-wrapper.sidebar-collapsed #new-chat-button span:not(.icon) { display: inline-block; }
+            #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin-right: 12px; }
+            #app-wrapper.sidebar-collapsed #sidebar-toggle-button { display: none; }
+            #app-wrapper.sidebar-collapsed #history-list-container { display: block; }
+            #game-container { max-width: 100%; border-radius: 0; border: none; }
+            header { padding-top: calc(10px + env(safe-area-inset-top)); }
+            #input-area { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+            .header-actions { position: absolute; right: 15px; margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-wrapper">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-button"><span class="icon">＋</span><span>开启新对话</span></button>
+                <button id="sidebar-toggle-button" title="收起/展开侧边栏">‹</button>
+            </div>
+            <div id="history-list-container"></div>
+        </aside>
+        <div id="sidebar-overlay"></div>
+        <main id="game-container">
+            <header>
+                <button id="mobile-menu-toggle">☰</button>
+                <div class="title-container">
+                    <h1>猜盐 - </h1>
+                    <div id="game-mode-dropdown" class="custom-select-wrapper">
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="export-button" class="header-action-btn" title="导出历史记录">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 4.75a1.5 1.5 0 0 0-1.5 1.5v11.5a1.5 1.5 0 0 0 1.5 1.5h11.5a1.5 1.5 0 0 0 1.5-1.5v-4a1 1 0 1 1 2 0v4a3.5 3.5 0 0 1-3.5 3.5H6.25a3.5 3.5 0 0 1-3.5-3.5V6.25a3.5 3.5 0 0 1 3.5-3.5h4a1 1 0 1 1 0 2h-4Zm6.5-1a1 1 0 0 1 1-1h6.5a1 1 0 0 1 1 1v6.5a1 1 0 1 1-2 0V6.164l-4.793 4.793a1 1 0 1 1-1.414-1.414l4.793-4.793H13.75a1 1 0 0 1-1-1Z"/></svg>
+                    </button>
+                    <button id="import-button" class="header-action-btn" title="导入历史记录">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z"/></svg>
+                    </button>
+                </div>
+            </header>
+            <div id="chat-window"></div>
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="请输入你的提问或诊断..." disabled>
+                <button id="send-button" disabled title="发送">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.815 12.197-7.532 1.256a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 0 0 0-1.342l-18-9c-.614-.307-1.283.304-1.035.943l2.598 6.957a.5.5 0 0 0 .386.319l7.532 1.255a.2.2 0 0 1 0 .394Z"/></svg>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+
+    <div id="context-menu">
+        <div class="context-menu-item" id="rename-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25-1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg><span>重命名</span></div>
+        <div class="context-menu-item delete" id="delete-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.22-2.365.468a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193v-.443A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25-.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg><span>删除</span></div>
+    </div>
+    
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-dialog">
+            <div class="modal-header"><h2 id="confirm-modal-title">永久删除对话</h2><button class="close-btn" id="confirm-modal-close-btn">×</button></div>
+            <div class="modal-body"><p id="confirm-modal-message">删除后，该对话将不可恢复。确认删除吗？</p></div>
+            <div class="modal-footer"><button class="cancel-btn" id="confirm-modal-cancel-btn">取消</button><button class="confirm-btn" id="confirm-modal-confirm-btn">删除</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal-dialog">
+            <div class="modal-header"><h2 id="info-modal-title">提示</h2><button class="close-btn" id="info-modal-close-btn">×</button></div>
+            <div class="modal-body"><p id="info-modal-message"></p></div>
+            <div class="modal-footer"><button class="confirm-btn import" id="info-modal-ok-btn">好的</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="error-modal">
+        <div class="modal-dialog">
+            <div class="modal-header"><h2 id="error-modal-title">错误</h2><button class="close-btn" id="error-modal-close-btn">×</button></div>
+            <div class="modal-body"><p id="error-modal-message"></p></div>
+            <div class="modal-footer"><button class="confirm-btn error" id="error-modal-ok-btn">好的</button></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const appWrapper = document.getElementById('app-wrapper');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleButton = document.getElementById('sidebar-toggle-button');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const newChatButton = document.getElementById('new-chat-button');
+        const historyListContainer = document.getElementById('history-list-container');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const gameModeDropdown = document.getElementById('game-mode-dropdown');
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const contextMenu = document.getElementById('context-menu');
+        const renameOption = document.getElementById('rename-option');
+        const deleteOption = document.getElementById('delete-option');
+        const exportButton = document.getElementById('export-button');
+        const importButton = document.getElementById('import-button');
+        const importFileInput = document.getElementById('import-file-input');
+
+        // 确认模态框元素
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmModalTitle = document.getElementById('confirm-modal-title');
+        const confirmModalMessage = document.getElementById('confirm-modal-message');
+        const confirmModalConfirmBtn = document.getElementById('confirm-modal-confirm-btn');
+        const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
+        const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
+
+        // 信息模态框元素
+        const infoModal = document.getElementById('info-modal');
+        const infoModalTitle = document.getElementById('info-modal-title');
+        const infoModalMessage = document.getElementById('info-modal-message');
+        const infoModalOkBtn = document.getElementById('info-modal-ok-btn');
+        const infoModalCloseBtn = document.getElementById('info-modal-close-btn');
+
+        // 错误模态框元素
+        const errorModal = document.getElementById('error-modal');
+        const errorModalTitle = document.getElementById('error-modal-title');
+        const errorModalMessage = document.getElementById('error-modal-message');
+        const errorModalOkBtn = document.getElementById('error-modal-ok-btn');
+        const errorModalCloseBtn = document.getElementById('error-modal-close-btn');
+        
+        // --- App State & Constants ---
+        const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun', 'Referer': 'https://xiaoce.fun/guessdisease', 'Fun-Device': 'web', 'Dnt': '1' };
+        
+        const GAME_MODES = {
+            disease: {
+                title: '猜病',
+                typeParam: 'guess_disease',
+                apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage',
+                storagePrefix: 'guessDisease_chat_',
+                activeKey: 'activeGuessDiseaseChat',
+                greeting: '你好，医生。',
+                placeholder: '请输入你的提问或诊断…',
+                successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉'
+            },
+            crime: {
+                title: '猜罪',
+                typeParam: 'guess_crime',
+                apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage',
+                storagePrefix: 'guessCrime_chat_',
+                activeKey: 'activeGuessCrimeChat',
+                greeting: '你好，律师。',
+                placeholder: '请输入你的提问或罪名猜测',
+                successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉'
+            }
+        };
+        
+        let currentGameMode = 'disease';
+        let chatHistory = [];
+        let currentChatKey = null;
+        let chatId = "";
+        let isGameActive = false;
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let contextMenuTarget = null;
+        let dailySuccessCount = null;
+        let currentVictoryRank = null;
+
+        function getLocalISOString() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const seconds = String(d.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        }
+
+        // --- Core Functions ---
+        function scrollToBottom() {
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        }
+
+        function renderMessage({ text, sender, type }) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'system' ? `system-message ${type}` : `message ${sender}-message`;
+            if (sender !== 'system') {
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.textContent = text;
+                messageDiv.appendChild(bubble);
+            } else {
+                messageDiv.textContent = text;
+            }
+            chatWindow.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function setInputState(enabled, placeholderText = "") {
+            userInput.disabled = !enabled;
+            sendButton.disabled = !enabled;
+            if (placeholderText) {
+                userInput.placeholder = placeholderText;
+            }
+        }
+        
+        async function saveHistory(firstUserMessage = null) {
+            if (!currentChatKey) return;
+            const config = GAME_MODES[currentGameMode];
+            try {
+                const existingData = JSON.parse(localStorage.getItem(currentChatKey) || '{}');
+                const dataToSave = {
+                    ...existingData,
+                    messages: chatHistory,
+                    chatId: chatId,
+                    isGameActive: isGameActive,
+                    victoryRank: currentVictoryRank,
+                };
+                if (firstUserMessage) {
+                    dataToSave.title = firstUserMessage.length > 28 ? firstUserMessage.substring(0, 28) + '...' : firstUserMessage;
+                }
+                localStorage.setItem(currentChatKey, JSON.stringify(dataToSave));
+                
+                if (firstUserMessage) {
+                    localStorage.setItem(config.activeKey, currentChatKey);
+                }
+                populateSidebar();
+            } catch (error) {
+                console.error("保存聊天记录失败，可能是磁盘空间已满或浏览器限制:", error);
+                await showErrorDialog({ title: '保存失败', message: '无法保存聊天记录。请检查浏览器设置或磁盘空间。' });
+            }
+        }
+        
+        async function loadChat(keyToLoad) {
+            const config = GAME_MODES[currentGameMode];
+            const savedData = localStorage.getItem(keyToLoad);
+            if (!savedData) {
+                await startNewChat();
+                return;
+            };
+            try {
+                const data = JSON.parse(savedData);
+                currentChatKey = keyToLoad;
+                localStorage.setItem(config.activeKey, keyToLoad); 
+                chatHistory = data.messages || [];
+                chatId = data.chatId || "";
+                isGameActive = typeof data.isGameActive === 'boolean' ? data.isGameActive : false;
+                currentVictoryRank = data.victoryRank || null;
+
+                chatWindow.innerHTML = '';
+                renderMessage({ text: config.greeting, sender: 'ai' });
+                chatHistory.forEach(msg => renderMessage(msg));
+                
+                if (isGameActive) {
+                    const puzzleDate = keyToLoad.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
+                    dailySuccessCount = await fetchSuccessCount(puzzleDate);
+                } else {
+                    dailySuccessCount = null;
+                }
+                updateUIForLoadedChat();
+            } catch (error) {
+                console.error("加载聊天记录失败:", error);
+                await startNewChat();
+            }
+        }
+        
+        async function startNewChat() {
+            const config = GAME_MODES[currentGameMode];
+            currentChatKey = null;
+            chatHistory = [];
+            chatId = "";
+            isGameActive = true;
+            currentVictoryRank = null;
+            localStorage.setItem(config.activeKey, 'new');
+            
+            chatWindow.innerHTML = '';
+            renderMessage({ text: config.greeting, sender: 'ai' });
+            
+            populateSidebar();
+            
+            dailySuccessCount = await fetchSuccessCount();
+            updateUIForLoadedChat();
+            
+            if (isMobile) {
+                document.body.classList.remove('sidebar-open');
+            }
+        }
+        
+        function updateUIForLoadedChat() {
+            const config = GAME_MODES[currentGameMode];
+            let placeholder = "";
+            if (isGameActive) {
+                placeholder = config.placeholder;
+                if (!isMobile && dailySuccessCount !== null) {
+                    const isNewChat = currentChatKey === null;
+                    const dayText = isNewChat ? '今日' : '该日';
+                    placeholder += ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                }
+            } else {
+                if (currentVictoryRank !== null) {
+                    placeholder = `您是该日第 ${currentVictoryRank.toLocaleString()} 位猜出谜底的人！🎉`;
+                } else {
+                    placeholder = "恭喜你，已猜出谜底！请开启新对话。";
+                }
+            }
+            setInputState(isGameActive, placeholder);
+
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.key === currentChatKey);
+            });
+            if (!isMobile) {
+                userInput.focus();
+            }
+        }
+
+        function getFormattedDate(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+        
+        async function fetchSuccessCount(puzzleDateStr = null) {
+            const config = GAME_MODES[currentGameMode];
+            let dateForApi;
+
+            if (puzzleDateStr) {
+                dateForApi = puzzleDateStr.replace(/-/g, '');
+            } else {
+                dateForApi = getFormattedDate();
+            }
+            
+            const url = `https://xiaoce.fun/api/v0/quiz/daily/getStatus?type=${config.typeParam}&date=${dateForApi}`;
+            try {
+                const response = await fetch(url, { method: 'GET', headers: BASE_HEADERS });
+                if (!response.ok) {
+                    console.warn(`获取成功人数失败 (HTTP ${response.status})`);
+                    return null;
+                }
+                const data = await response.json();
+                if (data.success && data.data && typeof data.data.success !== 'undefined') {
+                    return data.data.success;
+                } else {
+                    console.warn("API返回成功，但数据格式不正确", data);
+                    return null;
+                }
+            } catch (error) {
+                console.error("获取成功人数时发生网络错误:", error);
+                return null;
+            }
+        }
+
+        async function sendMessage() {
+            const messageText = userInput.value.trim();
+            if (!messageText || !isGameActive) return;
+            const config = GAME_MODES[currentGameMode];
+            const isFirstMessage = (currentChatKey === null);
+            if (isFirstMessage) {
+                currentChatKey = config.storagePrefix + getLocalISOString();
+            }
+            
+            const puzzleDateForApi = currentChatKey.substring(config.storagePrefix.length, config.storagePrefix.length + 10).replace(/-/g, '');
+
+            chatHistory.push({ text: messageText, sender: 'user' });
+            renderMessage({ text: messageText, sender: 'user' });
+            userInput.value = '';
+            setInputState(false, "AI思考中...");
+
+            try {
+                const response = await fetch(config.apiUrl, {
+                    method: 'POST',
+                    headers: { ...BASE_HEADERS, 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}`
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || `请求失败，状态码: ${response.status}`);
+                }
+                
+                const d = data.data || {};
+                if (d.chatId) chatId = d.chatId;
+                
+                const aiMessage = { text: d.answer || "我不知道该怎么回答。", sender: 'ai' };
+                chatHistory.push(aiMessage);
+                renderMessage(aiMessage);
+                
+                if (d.right) {
+                    isGameActive = false;
+                    const successMsg = { text: config.successMessage, sender: 'system', type: 'success'};
+                    chatHistory.push(successMsg);
+                    renderMessage(successMsg);
+                    
+                    const puzzleDate = currentChatKey.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
+                    dailySuccessCount = await fetchSuccessCount(puzzleDate);
+                    currentVictoryRank = dailySuccessCount;
+                }
+                updateUIForLoadedChat(); 
+            } catch (error) {
+                console.error("发送消息失败:", error);
+                chatHistory.pop();
+                if (chatWindow.lastChild) chatWindow.lastChild.remove();
+                const errorMsg = { text: `错误: 消息发送失败，请检查网络并重试。`, sender: 'system', type: 'error' };
+                chatHistory.push(errorMsg);
+                renderMessage(errorMsg);
+                userInput.value = messageText;
+                setInputState(true, "发生错误，请重试");
+            } finally {
+                saveHistory(isFirstMessage ? messageText : null);
+                if (!isMobile) userInput.focus();
+            }
+        }
+
+        // --- Browser Compatibility Check ---
+        async function checkBrowserCompatibility() {
+            // 如果会话中已经记录显示过警告，则直接返回
+            if (sessionStorage.getItem('browserVersionWarningShown') === 'true') {
+                return;
+            }
+
+            // 定义一个函数来检测特定的CSS功能
+            const isFeatureSupported = () => {
+                const testEl = document.createElement('div');
+                
+                // 1. 检测 Flexbox gap 属性
+                // 现代浏览器支持在flex容器中使用gap
+                testEl.style.display = 'flex';
+                testEl.style.gap = '1px';
+                const isGapSupported = testEl.style.gap === '1px';
+
+                // 2. 检测 backdrop-filter 属性
+                // 这是实现毛玻璃效果的关键，是视觉体验的重要部分
+                const isBackdropSupported = 'backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style;
+
+                // 如果所有“完美支持”所需的功能都存在，则返回 true
+                return isGapSupported && isBackdropSupported;
+            };
+
+            // 如果功能不被“完美支持”
+            if (!isFeatureSupported()) {
+                // 调用已有的错误模态框
+                await showErrorDialog({
+                    title: '浏览器兼容性提示',
+                    message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Safari）以获得最佳体验。'
+                });
+                // 在 sessionStorage 中设置一个标志，防止刷新页面时重复提示
+                sessionStorage.setItem('browserVersionWarningShown', 'true');
+            }
+        }
+
+        // --- UI Helpers ---
+        function getRelativeDateGroup(dateStr) {
+            const today = new Date();
+            const date = new Date(dateStr);
+            today.setHours(0, 0, 0, 0);
+            date.setHours(0, 0, 0, 0);
+            const diffDays = (today - date) / (1000 * 60 * 60 * 24);
+            if (diffDays === 0) return "今天";
+            if (diffDays === 1) return "昨天";
+            if (diffDays < 7) return "7天内";
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function populateSidebar() {
+            const config = GAME_MODES[currentGameMode];
+            const prefix = config.storagePrefix;
+            const chats = Object.keys(localStorage)
+                .filter(k => k.startsWith(prefix))
+                .map(key => ({ key, data: JSON.parse(localStorage.getItem(key) || '{}') }))
+                .filter(chat => chat.data && chat.data.title)
+                .sort((a, b) => b.key.localeCompare(a.key));
+            
+            const groups = {};
+            chats.forEach(chat => {
+                const dateStr = chat.key.substring(prefix.length, prefix.length + 10);
+                const groupName = getRelativeDateGroup(dateStr);
+                if (!groups[groupName]) {
+                    groups[groupName] = [];
+                }
+                groups[groupName].push(chat);
+            });
+            
+            historyListContainer.innerHTML = '';
+            const groupOrder = ["今天", "昨天", "7天内"];
+            const sortedGroupNames = Object.keys(groups).sort((a, b) => {
+                const aIndex = groupOrder.indexOf(a);
+                const bIndex = groupOrder.indexOf(b);
+                if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+                if (aIndex !== -1) return -1;
+                if (bIndex !== -1) return 1;
+                return b.localeCompare(a);
+            });
+            
+            sortedGroupNames.forEach(groupName => {
+                const header = document.createElement('div');
+                header.className = 'history-group-header';
+                header.textContent = groupName;
+                historyListContainer.appendChild(header);
+                groups[groupName].forEach(({ key, data }) => {
+                    const li = document.createElement('div');
+                    li.className = 'history-item';
+                    li.dataset.key = key;
+                    li.innerHTML = `<span>${data.title}</span>`;
+                    li.title = data.title;
+                    if(key === currentChatKey) li.classList.add('active');
+                    li.addEventListener('click', () => loadChat(key));
+                    historyListContainer.appendChild(li);
+                });
+            });
+        }
+
+        function handleRename() {
+            if (!contextMenuTarget) return;
+            const key = contextMenuTarget.dataset.key;
+            const titleSpan = contextMenuTarget.querySelector('span');
+            const currentTitle = titleSpan.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.style.cssText = 'width:100%;padding:0;margin:0;border:none;background:transparent;color:inherit;font:inherit;outline:none;';
+            contextMenuTarget.replaceChild(input, titleSpan);
+            input.focus();
+            input.select();
+            
+            const saveRename = () => {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    try {
+                        const savedData = JSON.parse(localStorage.getItem(key) || '{}');
+                        savedData.title = newTitle;
+                        localStorage.setItem(key, JSON.stringify(savedData));
+                    } catch(e) { console.error("重命名失败", e); }
+                }
+                titleSpan.textContent = newTitle || currentTitle;
+                contextMenuTarget.replaceChild(titleSpan, input);
+            };
+            
+            input.addEventListener('blur', saveRename);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') input.blur();
+                if (e.key === 'Escape') contextMenuTarget.replaceChild(titleSpan, input);
+            });
+        }
+        
+        function showErrorDialog({ title = '错误', message = '' }) {
+            return new Promise(resolve => {
+                errorModalTitle.textContent = title;
+                errorModalMessage.textContent = message;
+
+                let resolver = null;
+                const show = () => { errorModal.classList.add('show'); };
+                const hide = () => {
+                    errorModal.classList.remove('show');
+                    if (resolver) { resolver(); resolver = null; }
+                    errorModalOkBtn.removeEventListener('click', handleAction);
+                    errorModalCloseBtn.removeEventListener('click', handleAction);
+                    errorModal.removeEventListener('click', handleOverlayClick);
+                };
+                const handleAction = () => hide();
+                const handleOverlayClick = (e) => { if (e.target === errorModal) { handleAction(); } };
+                
+                errorModalOkBtn.addEventListener('click', handleAction);
+                errorModalCloseBtn.addEventListener('click', handleAction);
+                errorModal.addEventListener('click', handleOverlayClick);
+                
+                show();
+                resolver = resolve;
+            });
+        }
+
+        function showInfoDialog({ title = '提示', message = '' }) {
+            return new Promise(resolve => {
+                infoModalTitle.textContent = title;
+                infoModalMessage.textContent = message;
+
+                let resolver = null;
+                const show = () => { infoModal.classList.add('show'); };
+                const hide = () => {
+                    infoModal.classList.remove('show');
+                    if (resolver) { resolver(); resolver = null; }
+                    infoModalOkBtn.removeEventListener('click', handleAction);
+                    infoModalCloseBtn.removeEventListener('click', handleAction);
+                    infoModal.removeEventListener('click', handleOverlayClick);
+                };
+                const handleAction = () => hide();
+                const handleOverlayClick = (e) => { if (e.target === infoModal) { handleAction(); } };
+                
+                infoModalOkBtn.addEventListener('click', handleAction);
+                infoModalCloseBtn.addEventListener('click', handleAction);
+                infoModal.addEventListener('click', handleOverlayClick);
+                
+                show();
+                resolver = resolve;
+            });
+        }
+
+        function showConfirmDialog({ 
+            title = '永久删除对话', 
+            message = '删除后，该对话将不可恢复。确认删除吗？', 
+            confirmText = '删除',
+            confirmClass = '' 
+        }) {
+            return new Promise(resolve => {
+                confirmModalTitle.textContent = title;
+                confirmModalMessage.textContent = message;
+                confirmModalConfirmBtn.textContent = confirmText;
+                confirmModalConfirmBtn.className = `confirm-btn ${confirmClass}`;
+
+                let resolver = null;
+                const show = () => { confirmModal.classList.add('show'); };
+                const hide = (value) => {
+                    confirmModal.classList.remove('show');
+                    if (resolver) { resolver(value); resolver = null; }
+                    confirmModalConfirmBtn.removeEventListener('click', handleConfirm);
+                    confirmModalCancelBtn.removeEventListener('click', handleCancel);
+                    confirmModalCloseBtn.removeEventListener('click', handleCancel);
+                    confirmModal.removeEventListener('click', handleOverlayClick);
+                };
+                const handleConfirm = () => hide(true);
+                const handleCancel = () => hide(false);
+                const handleOverlayClick = (e) => { if (e.target === confirmModal) { handleCancel(); } };
+                
+                confirmModalConfirmBtn.addEventListener('click', handleConfirm);
+                confirmModalCancelBtn.addEventListener('click', handleCancel);
+                confirmModalCloseBtn.addEventListener('click', handleCancel);
+                confirmModal.addEventListener('click', handleOverlayClick);
+                
+                show();
+                resolver = resolve;
+            });
+        }
+        
+        async function handleDelete() {
+            if (!contextMenuTarget) return;
+            const key = contextMenuTarget.dataset.key;
+            const confirmed = await showConfirmDialog({
+                title: '永久删除对话',
+                message: '删除后，该对话将不可恢复。确认删除吗？',
+                confirmText: '删除'
+            });
+            if (confirmed) {
+                localStorage.removeItem(key);
+                populateSidebar();
+                if (key === currentChatKey) {
+                    await startNewChat();
+                }
+            }
+        }
+        
+        function createCustomDropdown() {
+            const selected = document.createElement('div');
+            selected.className = 'select-selected';
+            
+            const selectedText = document.createElement('span');
+            selectedText.id = 'selected-game-mode-text';
+            selectedText.textContent = GAME_MODES[currentGameMode].title;
+            selected.appendChild(selectedText);
+
+            const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            arrow.setAttribute('class', 'select-arrow');
+            arrow.setAttribute('viewBox', '0 0 20 20');
+            arrow.innerHTML = `<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />`;
+            selected.appendChild(arrow);
+            
+            const items = document.createElement('ul');
+            items.className = 'select-items';
+            
+            Object.keys(GAME_MODES).forEach(key => {
+                const li = document.createElement('li');
+                li.className = 'select-item';
+                li.textContent = GAME_MODES[key].title;
+                li.dataset.value = key;
+                li.addEventListener('click', async function(e) {
+                    e.stopPropagation();
+                    const newMode = this.dataset.value;
+                    if (newMode === currentGameMode) {
+                        closeDropdown();
+                        return;
+                    }
+                    
+                    selectedText.textContent = this.textContent;
+                    closeDropdown();
+                    
+                    await handleGameModeChange(newMode);
+                });
+                items.appendChild(li);
+            });
+            
+            gameModeDropdown.appendChild(selected);
+            gameModeDropdown.appendChild(items);
+            
+            selected.addEventListener('click', (e) => {
+                e.stopPropagation();
+                items.classList.toggle('show');
+                selected.classList.toggle('select-arrow-active');
+            });
+        }
+        
+        function closeDropdown() {
+            const items = gameModeDropdown.querySelector('.select-items');
+            const selected = gameModeDropdown.querySelector('.select-selected');
+            if (items && items.classList.contains('show')) {
+                items.classList.remove('show');
+                selected.classList.remove('select-arrow-active');
+            }
+        }
+
+        async function handleGameModeChange(newMode) {
+            currentGameMode = newMode;
+            localStorage.setItem('lastGameMode', currentGameMode);
+            document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
+            
+            await startNewChat();
+        }
+
+        async function handleExport() {
+            const allData = {};
+            const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
+            const keysToExport = ['lastGameMode', 'sidebarCollapsedState'];
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (keysToExport.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            }
+
+            if (Object.keys(allData).length <= keysToExport.length) { 
+                await showInfoDialog({ title: '导出提示', message: '没有可导出的历史记录。' });
+                return;
+            }
+
+            const jsonString = JSON.stringify(allData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'caiyan.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        async function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const confirmed = await showConfirmDialog({
+                title: '导入历史记录',
+                message: '此操作将覆盖所有本地聊天记录，且不可恢复。确定要导入吗？',
+                confirmText: '导入',
+                confirmClass: 'import'
+            });
+
+            if (!confirmed) {
+                importFileInput.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
+                    const keysToClear = ['lastGameMode', 'sidebarCollapsedState'];
+
+                    const keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (keysToClear.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
+                           keysToRemove.push(key);
+                        }
+                    }
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+                    
+                    for (const key in importedData) {
+                        if (Object.hasOwnProperty.call(importedData, key)) {
+                            localStorage.setItem(key, importedData[key]);
+                        }
+                    }
+                    location.reload();
+
+                } catch (error) {
+                    console.error("Import error:", error);
+                    await showErrorDialog({ title: '导入失败', message: '文件格式无效或已损坏。' });
+                } finally {
+                    importFileInput.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- Event Handlers & Initialization ---
+        function setupEventHandlers() {
+            sidebarToggleButton.addEventListener('click', () => {
+                appWrapper.classList.toggle('sidebar-collapsed');
+                const isCollapsed = appWrapper.classList.contains('sidebar-collapsed');
+                sidebarToggleButton.textContent = isCollapsed ? '›' : '‹';
+                localStorage.setItem('sidebarCollapsedState', isCollapsed);
+            });
+
+            mobileMenuToggle.addEventListener('click', () => { document.body.classList.add('sidebar-open'); });
+            sidebarOverlay.addEventListener('click', () => {
+                document.body.classList.remove('sidebar-open');
+                if (document.activeElement) document.activeElement.blur();
+            });
+
+            newChatButton.addEventListener('click', startNewChat);
+            sendButton.addEventListener('click', sendMessage);
+            
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            userInput.addEventListener('focus', () => {
+                if (isMobile && isGameActive && dailySuccessCount !== null) {
+                    const isNewChat = currentChatKey === null;
+                    const dayText = isNewChat ? '今日' : '该日';
+                    userInput.placeholder = `${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                }
+            });
+            userInput.addEventListener('blur', () => {
+                if (isMobile && isGameActive) {
+                    userInput.placeholder = GAME_MODES[currentGameMode].placeholder;
+                }
+            });
+
+            historyListContainer.addEventListener('contextmenu', (e) => {
+                const target = e.target.closest('.history-item');
+                if (target) {
+                    e.preventDefault();
+                    contextMenuTarget = target;
+                    closeDropdown();
+                    contextMenu.classList.remove('show');
+                    requestAnimationFrame(() => {
+                        contextMenu.style.top = `${e.clientY}px`;
+                        contextMenu.style.left = `${e.clientX}px`;
+                        contextMenu.classList.add('show');
+                    });
+                }
+            });
+
+            window.addEventListener('click', () => {
+                if (contextMenu.classList.contains('show')) contextMenu.classList.remove('show');
+                closeDropdown();
+            });
+            
+            renameOption.addEventListener('click', handleRename);
+            deleteOption.addEventListener('click', handleDelete);
+
+            exportButton.addEventListener('click', handleExport);
+            importButton.addEventListener('click', () => importFileInput.click());
+            importFileInput.addEventListener('change', handleImport);
+        }
+
+        async function initializeApp() {
+            // 注册 Service Worker
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                  .then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                  })
+                  .catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                  });
+              });
+            }
+
+            // 在应用初始化时首先进行浏览器兼容性检查
+            await checkBrowserCompatibility();
+
+            if (localStorage.getItem('sidebarCollapsedState') === 'true') {
+                appWrapper.classList.add('sidebar-collapsed');
+                sidebarToggleButton.textContent = '›';
+            }
+
+            const lastMode = localStorage.getItem('lastGameMode');
+            if (lastMode && GAME_MODES[lastMode]) {
+                currentGameMode = lastMode;
+            }
+            document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
+
+            createCustomDropdown();
+            setupEventHandlers();
+            populateSidebar();
+            
+            const config = GAME_MODES[currentGameMode];
+            const activeChatState = localStorage.getItem(config.activeKey);
+            const prefix = config.storagePrefix;
+
+            if (activeChatState === 'new') {
+                await startNewChat();
+            } else if (activeChatState) {
+                await loadChat(activeChatState);
+            } else {
+                const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix)).sort().reverse();
+                if (keys.length > 0) {
+                    await loadChat(keys[0]);
+                } else {
+                    await startNewChat();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>

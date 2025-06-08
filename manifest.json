@@ -1,0 +1,27 @@
+{
+  "name": "猜盐",
+  "short_name": "猜盐",
+  "description": "做题也可以很快乐",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#292a2d",
+  "theme_color": "#4d6bfe",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
