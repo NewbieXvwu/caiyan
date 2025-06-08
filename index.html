@@ -350,7 +350,6 @@
             return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
         }
         
-        // --- 日期选择器核心逻辑 ---
         async function fetchActiveDates() {
             const config = GAME_MODES[currentGameMode];
             if (activeDatesCache[currentGameMode]) {
@@ -553,7 +552,7 @@
                 const data = JSON.parse(savedData);
                 currentChatKey = keyToLoad;
                 targetDate = null;
-                dpSelectedDate = null; // 加载旧对话时，也重置日历选择
+                dpSelectedDate = null;
                 localStorage.setItem(config.activeKey, keyToLoad); 
                 chatHistory = data.messages || [];
                 chatId = data.chatId || "";
@@ -715,7 +714,7 @@
             if (!isFeatureSupported()) {
                 await showErrorDialog({
                     title: '浏览器兼容性提示',
-                    message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Safari）以获得最佳体验。'
+                    message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Edge）以获得最佳体验。'
                 });
                 sessionStorage.setItem('browserVersionWarningShown', 'true');
             }
@@ -1046,9 +1045,8 @@
                 }
             });
 
-            // --- 【开始】修改：增强的侧边栏项目事件处理，兼容PC右键和移动端长按 ---
 
-            // 1. 辅助函数：用于显示上下文菜单并处理边界
+            // 辅助函数：用于显示上下文菜单并处理边界
             const showContextMenu = (target, x, y) => {
                 contextMenuTarget = target;
                 closeDropdown();
@@ -1070,7 +1068,7 @@
                 });
             };
 
-            // 2. PC端：保留原有的右键 `contextmenu` 事件
+            // PC端：保留原有的右键 `contextmenu` 事件
             historyListContainer.addEventListener('contextmenu', (e) => {
                 const target = e.target.closest('.history-item');
                 if (target) {
@@ -1079,7 +1077,7 @@
                 }
             });
 
-            // 3. 移动端：实现自定义长按逻辑
+            // 移动端：实现自定义长按逻辑
             let longPressTimer = null;
             let touchStartX = 0;
             let touchStartY = 0;
@@ -1125,7 +1123,6 @@
                 }
             });
 
-            // --- 【结束】修改：增强的侧边栏项目事件处理 ---
 
             document.addEventListener('click', (e) => {
                 if (contextMenu.classList.contains('show') && !contextMenu.contains(e.target) && !e.target.closest('.history-item')) {
