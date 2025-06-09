@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>猜盐</title>
-    <link rel="icon" href="icons/icon-192x192.jpg" type="image/jpg">
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
@@ -1246,8 +1246,12 @@
                     touchStartY = e.touches[0].clientY;
                     longPressTimer = setTimeout(() => {
                         longPressTimer = null;
+                        if (navigator.vibrate) {
+                            navigator.vibrate(100);
+                        }
+                        
                         showContextMenu(target, e.touches[0].clientX, e.touches[0].clientY);
-                    }, 500);
+                    }, 500); // 500毫秒定义为长按
                 }
             }, { passive: true });
 
