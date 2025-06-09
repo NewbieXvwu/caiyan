@@ -1,17 +1,14 @@
-const CACHE_NAME = 'caiyan-cache-v5';
+const CACHE_NAME = 'caiyan-cache-v6';
 
 const urlsToCache = [
   './', // index.html
   './manifest.json',
-  './icons/icon-192x192.avif',
+  './icons/icon-192x192.png',
   './icons/icon-192x192.webp',
-  './icons/icon-192x192.jpg',
-  './icons/icon-512x512.avif',
+  './icons/icon-512x512.png',
   './icons/icon-512x512.webp',
-  './icons/icon-512x512.jpg',
-  './icons/icon-512x512-maskable.avif',
-  './icons/icon-512x512-maskable.webp',
-  './icons/icon-512x512-maskable.jpg'
+  './icons/icon-512x512-maskable.png',
+  './icons/icon-512x512-maskable.webp'
 ];
 
 // 安装 Service Worker
