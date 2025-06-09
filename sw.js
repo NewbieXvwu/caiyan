@@ -3,8 +3,8 @@ const CACHE_NAME = 'caiyan-cache-v6';
 const urlsToCache = [
   './', // index.html
   './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-192x192.webp',
+  './icons/icon-128x128.png',
+  './icons/icon-128x128.webp',
   './icons/icon-512x512.png',
   './icons/icon-512x512.webp',
   './icons/icon-512x512-maskable.png',
