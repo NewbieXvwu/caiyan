@@ -906,7 +906,7 @@
             });
         }
 
-        // 新增：浏览器警告对话框函数
+        // 浏览器警告对话框函数
         function showBrowserWarningDialog({ title = '提示', message = '' }) {
             return new Promise(resolve => {
                 browserWarningTitle.textContent = title;
@@ -917,7 +917,7 @@
                 const show = () => { browserWarningModal.classList.add('show'); };
                 
                 const hide = () => {
-                    // 核心逻辑：在关闭时检查复选框
+                    // 在关闭时检查复选框
                     if (dontShowAgainCheckbox.checked) {
                         localStorage.setItem('suppressBrowserWarning', 'true');
                     }
@@ -1060,6 +1060,7 @@
             gameModeDropdown.appendChild(selected);
             gameModeDropdown.appendChild(items);
             selected.addEventListener('click', (e) => {
+                datePickerPopover.classList.remove('show');
                 items.classList.toggle('show');
                 selected.classList.toggle('select-arrow-active');
             });
@@ -1298,6 +1299,12 @@
             importFileInput.addEventListener('change', handleImport);
             dailyPuzzleButton.addEventListener('click', async (e) => {
                 e.stopPropagation();
+
+                // --- MODIFICATION START ---
+                // 在打开日期选择器之前，先关闭游戏模式下拉框
+                closeDropdown();
+                // --- MODIFICATION END ---
+                
                 if (datePickerPopover.classList.contains('show')) {
                     datePickerPopover.classList.remove('show');
                     return;
