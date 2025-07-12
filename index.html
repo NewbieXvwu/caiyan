@@ -7,266 +7,302 @@
     <link rel="icon" href="icons/icon-128x128.png" type="image/png">
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#fefbff">
 
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         :root {
-            /* 浅色模式 */
-            --sidebar-bg: #f9fbff; --main-bg: #ffffff; --chat-window-bg: #ffffff;
-            --text-primary: #1f2937; --text-secondary: #6b7280; --sidebar-text: #374151;
-            --sidebar-group-text: #9ca3af; --border-color: #e5e7eb;
-            --new-chat-btn-bg: #dbe9fe; --new-chat-btn-text: #1e40af; --new-chat-btn-hover-bg: #cfe2fd;
-            --history-item-hover-bg: #eff6fe; --history-item-active-bg: #dbe9fe; --history-item-active-text: #1d4ed8;
-            --user-msg-bg: #0084ff; --user-msg-text: #ffffff; --ai-msg-bg: #f3f4f6; --ai-msg-text: #11182c;
-            --accent-color: #409eff; --error-color: #ef4444; --success-color: #67c23a;
-            --context-menu-bg: rgba(255, 255, 255, 0.7); --context-menu-shadow: 0 4px 12px rgba(0,0,0,0.1); --context-menu-hover-bg: rgba(243, 244, 246, 0.7);
+            /* M3 Shape Tokens */
+            --md-sys-shape-corner-none: 0px;
+            --md-sys-shape-corner-xs: 4px;
+            --md-sys-shape-corner-s: 8px;
+            --md-sys-shape-corner-m: 12px;
+            --md-sys-shape-corner-l: 16px;
+            --md-sys-shape-corner-xl: 28px;
+            --md-sys-shape-corner-full: 100px;
+
+            /* M3 Elevation Tokens (Light) */
+            --md-sys-elevation-level-0: none;
+            --md-sys-elevation-level-1: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.3);
+            --md-sys-elevation-level-2: 0px 2px 6px 2px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.3);
+            --md-sys-elevation-level-3: 0px 4px 8px 3px rgba(0,0,0,0.15), 0px 1px 3px 0px rgba(0,0,0,0.3);
+
+            /* Animation Curves */
+            --md-animation-standard: cubic-bezier(0.2, 0, 0, 1);
+            --md-animation-emphasized: cubic-bezier(0.3, 0, 0, 1);
+            
+            /* Enhanced System Font Stack */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", "MiSans", "HarmonyOS Sans", "OPlusSans", "Vivosans", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+
+            /* M3 Light Theme Colors */
+            --md-sys-color-primary-rgb: 74, 100, 234;
+            --md-sys-color-primary: #4a64ea;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #e0e0ff;
+            --md-sys-color-on-primary-container: #001869;
+            --md-sys-color-secondary-container: #e2e0f9;
+            --md-sys-color-on-secondary-container-rgb: 26, 26, 46;
+            --md-sys-color-on-secondary-container: #1a1a2e;
+            --md-sys-color-tertiary: #78536b;
+            --md-sys-color-on-tertiary: #ffffff;
+            --md-sys-color-surface: #fdf8fd;
+            --md-sys-color-surface-container: #f3edf7;
+            --md-sys-color-surface-container-high: #eeebf1;
+            --md-sys-color-surface-container-highest: #e8e5ea;
+            --md-sys-color-on-surface-rgb: 28, 27, 31;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-on-surface-variant: #48454e;
+            --md-sys-color-outline: #79757f;
+            --md-sys-color-outline-variant: #c9c5d0;
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-on-error: #ffffff;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
+            --md-sys-color-success: #376a20;
+            --md-sys-color-shadow: #000000;
+            
+            /* Component Mappings */
+            --sidebar-bg: var(--md-sys-color-surface-container);
+            --main-bg: var(--md-sys-color-surface);
+            --chat-window-bg: var(--md-sys-color-surface);
+            --text-primary: var(--md-sys-color-on-surface);
+            --text-secondary: var(--md-sys-color-on-surface-variant);
+            --sidebar-text: var(--md-sys-color-on-surface-variant);
+            --sidebar-group-text: var(--md-sys-color-on-surface-variant);
+            --border-color: var(--md-sys-color-outline-variant);
+            --new-chat-btn-bg: var(--md-sys-color-primary-container);
+            --new-chat-btn-text: var(--md-sys-color-on-primary-container);
+            --new-chat-btn-hover-bg: color-mix(in srgb, var(--md-sys-color-primary-container), var(--md-sys-color-on-primary-container) 8%);
+            --history-item-hover-bg: rgba(var(--md-sys-color-on-surface-rgb), 0.08);
+            --history-item-active-bg: var(--md-sys-color-secondary-container);
+            --history-item-active-text: var(--md-sys-color-on-secondary-container);
+            --user-msg-bg: var(--md-sys-color-primary);
+            --user-msg-text: var(--md-sys-color-on-primary);
+            --ai-msg-bg: var(--md-sys-color-surface-container-high);
+            --ai-msg-text: var(--md-sys-color-on-surface);
+            --accent-color: var(--md-sys-color-primary);
+            --error-color: var(--md-sys-color-error);
+            --success-color: var(--md-sys-color-success);
+            --context-menu-bg: var(--md-sys-color-surface-container-high);
+            --context-menu-shadow: var(--md-sys-elevation-level-2);
+            --context-menu-hover-bg: rgba(var(--md-sys-color-on-surface-rgb), 0.08);
             --modal-overlay-bg: rgba(0, 0, 0, 0.4); 
-            --modal-bg: rgba(255, 255, 255, 0.7);
-            --modal-cancel-btn-bg: #e5e7eb;
-            --modal-error-bg: rgba(255, 235, 235, 0.7);
-            --modal-error-btn-bg: #FF6666;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --modal-bg: var(--md-sys-color-surface-container-highest);
+            --modal-cancel-btn-bg: transparent;
+            --modal-confirm-btn-text: var(--md-sys-color-on-primary);
+            --modal-cancel-btn-text: var(--md-sys-color-primary);
+            --modal-error-bg: var(--md-sys-color-error-container);
+            --modal-error-text: var(--md-sys-color-on-error-container);
+            --modal-error-btn-bg: var(--md-sys-color-error);
+            --modal-error-btn-text: var(--md-sys-color-on-error);
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --sidebar-bg: #212327; --main-bg: #292a2d; --chat-window-bg: #292a2d;
-                --text-primary: #f9fafb; --text-secondary: #9ca3af; --sidebar-text: #d1d5db;
-                --sidebar-group-text: #9ca3af; --border-color: #374151;
-                --new-chat-btn-bg: #4d6bfe; --new-chat-btn-text: #ffffff; --new-chat-btn-hover-bg: #435fe1;
-                --history-item-hover-bg: #333333; --history-item-active-bg: #494949; --history-item-active-text: #f9fafb;
-                --user-msg-bg: #4d6bfe; --user-msg-text: #ffffff; --ai-msg-bg: #374151; --ai-msg-text: #f9fafb;
-                --accent-color: #60a5fa; --error-color: #f87171;
-                --context-menu-bg: rgba(33, 35, 39, 0.7); --context-menu-shadow: 0 4px 12px rgba(0,0,0,0.2); --context-menu-hover-bg: rgba(67, 67, 67, 0.7);
-                --modal-overlay-bg: rgba(0, 0, 0, 0.6); 
-                --modal-bg: rgba(41, 42, 45, 0.7);
-                --modal-cancel-btn-bg: #4b5563;
-                --modal-error-bg: rgba(60, 45, 45, 0.75);
+                /* M3 Elevation Tokens (Dark) */
+                --md-sys-elevation-level-1: 0px 1px 3px 1px rgba(0,0,0,0.4), 0px 1px 2px 0px rgba(0,0,0,0.5);
+                --md-sys-elevation-level-2: 0px 2px 6px 2px rgba(0,0,0,0.4), 0px 1px 2px 0px rgba(0,0,0,0.5);
+                --md-sys-elevation-level-3: 0px 4px 8px 3px rgba(0,0,0,0.4), 0px 1px 3px 0px rgba(0,0,0,0.5);
+
+                /* M3 Dark Theme Colors */
+                --md-sys-color-primary-rgb: 189, 194, 255;
+                --md-sys-color-primary: #bdc2ff;
+                --md-sys-color-on-primary: #1932b5;
+                --md-sys-color-primary-container: #324bbd;
+                --md-sys-color-on-primary-container: #e0e0ff;
+                --md-sys-color-secondary-container: #454459;
+                --md-sys-color-on-secondary-container-rgb: 226, 224, 249;
+                --md-sys-color-on-secondary-container: #e2e0f9;
+                --md-sys-color-tertiary: #e7b9d5;
+                --md-sys-color-on-tertiary: #46263b;
+                --md-sys-color-surface: #141318;
+                --md-sys-color-surface-container: #201f24;
+                --md-sys-color-surface-container-high: #2b292f;
+                --md-sys-color-surface-container-highest: #36343a;
+                --md-sys-color-on-surface-rgb: 229, 225, 230;
+                --md-sys-color-on-surface: #e5e1e6;
+                --md-sys-color-on-surface-variant: #c9c5d0;
+                --md-sys-color-outline: #949099;
+                --md-sys-color-outline-variant: #48454e;
+                --md-sys-color-error: #ffb4ab;
+                --md-sys-color-on-error: #690005;
+                --md-sys-color-error-container: #93000a;
+                --md-sys-color-on-error-container: #ffdad6;
+                --md-sys-color-success: #a0d38c;
             }
-            * { scrollbar-width: thin; scrollbar-color: var(--modal-cancel-btn-bg) var(--main-bg); }
-            ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: var(--main-bg); } ::-webkit-scrollbar-thumb { background-color: var(--modal-cancel-btn-bg); border-radius: 4px; border: 2px solid var(--main-bg); } ::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+            * { scrollbar-width: thin; scrollbar-color: var(--md-sys-color-surface-container-highest) var(--md-sys-color-surface); }
+            ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: var(--md-sys-color-surface); } ::-webkit-scrollbar-thumb { background-color: var(--md-sys-color-surface-container-highest); border-radius: 4px; border: 2px solid var(--md-sys-color-surface); } ::-webkit-scrollbar-thumb:hover { background-color: var(--md-sys-color-on-surface-variant); }
         }
 
         html, body { position: relative; height: 100%; width: 100%; overflow: hidden; overscroll-behavior: none; }
-        body { font-family: var(--font-family); background-color: var(--sidebar-bg); margin: 0; color: var(--text-primary); display: flex; }
+        body { font-family: var(--font-family); background-color: var(--sidebar-bg); margin: 0; color: var(--text-primary); display: flex; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         #app-wrapper { display: flex; width: 100%; height: 100%; }
-        #sidebar { background-color: var(--sidebar-bg); color: var(--sidebar-text); width: 260px; display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.3s ease-in-out; padding: 8px; box-sizing: border-box; }
-        .sidebar-header { padding-bottom: 8px; display: flex; align-items: center; transition: flex-direction 0.3s ease; }
-        #new-chat-button { flex-grow: 1; padding: 10px; border: none; background-color: var(--new-chat-btn-bg); color: var(--new-chat-btn-text); border-radius: 8px; cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; font-weight: 500; display: flex; align-items: center; transition: all 0.2s; }
+        #sidebar { background-color: var(--sidebar-bg); color: var(--sidebar-text); width: 260px; display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.3s var(--md-animation-standard); padding: 12px; }
+        .sidebar-header { padding-bottom: 12px; display: flex; align-items: center; transition: flex-direction 0.3s var(--md-animation-standard); }
+        #new-chat-button { flex-grow: 1; height: 56px; padding: 0 24px; border: none; background-color: var(--new-chat-btn-bg); color: var(--new-chat-btn-text); border-radius: var(--md-sys-shape-corner-l); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; font-weight: 600; display: flex; align-items: center; transition: background-color 0.2s var(--md-animation-standard); }
         #new-chat-button:hover { background-color: var(--new-chat-btn-hover-bg); }
-        #sidebar-toggle-button { margin-left: 10px; padding: 0; width: 36px; height: 36px; border: 1px solid var(--border-color); background-color: transparent; color: var(--text-secondary); border-radius: 8px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 1.5em; }
+        #new-chat-button .icon { font-size: 1.8em; margin-right: 16px; font-weight: 400; }
+        #sidebar-toggle-button { margin-left: 10px; padding: 0; width: 40px; height: 40px; border: none; background-color: transparent; color: var(--text-secondary); border-radius: 50%; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--md-animation-standard); font-size: 1.5em; }
         #sidebar-toggle-button:hover { background-color: var(--history-item-hover-bg); }
-        #history-list-container { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex-grow: 1; }
-        .history-group-header { font-size: 0.75em; color: var(--sidebar-group-text); padding: 16px 12px 4px; font-weight: 500; }
-        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s, color 0.2s; 
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
+        #history-list-container { list-style: none; margin: 0; padding: 0 4px; overflow-y: auto; flex-grow: 1; }
+        .history-group-header { font-size: 0.8em; color: var(--sidebar-group-text); padding: 16px 16px 4px; font-weight: 500; }
+        .history-item { display: flex; align-items: center; height: 48px; padding: 0 16px; border-radius: var(--md-sys-shape-corner-full); cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
         .history-item:hover { background-color: var(--history-item-hover-bg); }
-        .history-item.active { background-color: var(--history-item-active-bg); color: var(--history-item-active-text); font-weight: 500; }
-        .icon { font-size: 1.5em; display: inline-block; width: 24px; height: 24px; text-align: center; line-height: 24px; margin-right: 12px; }
-        #app-wrapper.sidebar-collapsed #sidebar { width: 68px; }
-        #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: column-reverse; align-items: center; gap: 8px; }
-        #app-wrapper.sidebar-collapsed #new-chat-button { flex-grow: 0; justify-content: center; width: 36px; height: 36px; padding: 0; }
+        .history-item.active { background-color: var(--history-item-active-bg); color: var(--history-item-active-text); font-weight: 600; }
+        #app-wrapper.sidebar-collapsed #sidebar { width: 80px; padding: 12px 16px; }
+        #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: column-reverse; align-items: center; gap: 16px; }
+        #app-wrapper.sidebar-collapsed #new-chat-button { flex-grow: 0; justify-content: center; width: 48px; height: 48px; padding: 0; border-radius: var(--md-sys-shape-corner-l); }
         #app-wrapper.sidebar-collapsed #new-chat-button span:not(.icon) { display: none; }
-        #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin: 0; }
+        #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin: 0; font-size: 1.8em; }
         #app-wrapper.sidebar-collapsed #sidebar-toggle-button { margin: 0; }
         #app-wrapper.sidebar-collapsed #history-list-container { display: none; }
-        #context-menu { position: absolute; z-index: 1000; background-color: var(--context-menu-bg); border-radius: 8px; padding: 6px; box-shadow: var(--context-menu-shadow); border: 1px solid var(--border-color); min-width: 160px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transform: scale(0.95); transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s; }
-        #context-menu.show { opacity: 1; visibility: visible; transform: scale(1); }
-        .context-menu-item { position: relative; z-index: 1; display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--sidebar-text); overflow: hidden; }
-        .context-menu-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
-        .context-menu-item:hover::before { opacity: 1; }
+        
+        #context-menu { position: absolute; z-index: 1000; background-color: var(--context-menu-bg); border-radius: var(--md-sys-shape-corner-m); padding: 8px; box-shadow: var(--context-menu-shadow); min-width: 200px; opacity: 0; visibility: hidden; transform-origin: top left; transform: scale(0.95) translateY(-8px); transition: opacity 0.15s var(--md-animation-emphasized), transform 0.15s var(--md-animation-emphasized), visibility 0.15s; }
+        #context-menu.show { opacity: 1; visibility: visible; transform: scale(1) translateY(0); }
+        .context-menu-item { display: flex; align-items: center; padding: 12px 16px; border-radius: var(--md-sys-shape-corner-s); cursor: pointer; color: var(--text-primary); transition: background-color 0.2s var(--md-animation-standard); font-size: 1em; }
+        .context-menu-item:hover { background-color: var(--context-menu-hover-bg); }
         .context-menu-item.delete { color: var(--error-color); }
-        .context-menu-icon { margin-right: 12px; width: 16px; height: 16px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay-bg); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s; }
+        .context-menu-icon { margin-right: 16px; width: 20px; height: 20px; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay-bg); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s var(--md-animation-standard), visibility 0.2s; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
         .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-dialog { background-color: var(--modal-bg); padding: 24px; border-radius: 12px; box-shadow: var(--context-menu-shadow); width: 90%; max-width: 400px; border: 1px solid var(--border-color); transform: scale(0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.2s ease; }
+        .modal-dialog { background-color: var(--modal-bg); padding: 24px; border-radius: var(--md-sys-shape-corner-xl); box-shadow: var(--context-menu-shadow); width: 90%; max-width: 400px; transform: scale(0.95); transition: transform 0.2s var(--md-animation-standard); }
         .modal-overlay.show .modal-dialog { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .modal-header h2 { margin: 0; font-size: 1.1em; font-weight: 600; color: var(--text-primary); }
-        .modal-header .close-btn { background: none; border: none; font-size: 1.5em; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1; }
-        .modal-body p { margin: 0 0 12px 0; color: var(--text-secondary); font-size: 0.9em; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
-        .modal-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: opacity 0.2s ease; }
-        .modal-footer button:hover:not(:disabled) { opacity: 0.85; }
-        .modal-footer .cancel-btn { background-color: var(--modal-cancel-btn-bg); color: var(--text-primary); }
-        .modal-footer .confirm-btn { background-color: var(--error-color); color: white; }
-        .modal-footer .confirm-btn.import { background-color: var(--accent-color); }
-        #error-modal .modal-dialog { background-color: var(--modal-error-bg); }
-        #browser-warning-modal .modal-dialog { background-color: var(--modal-error-bg); }
-        .modal-footer .confirm-btn.error { background-color: var(--modal-error-btn-bg); color: white; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .modal-header h2 { margin: 0; font-size: 1.5em; font-weight: 500; color: var(--text-primary); }
+        .modal-header .close-btn { background: none; border: none; font-size: 1.8em; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1; opacity: 0.7; }
+        .modal-body p { margin: 0 0 24px 0; color: var(--text-secondary); font-size: 1em; line-height: 1.5; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 8px; }
+        .modal-footer button { padding: 10px 24px; border-radius: var(--md-sys-shape-corner-full); border: none; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: opacity 0.2s var(--md-animation-standard), background-color 0.2s var(--md-animation-standard); }
+        .modal-footer button:hover:not(:disabled) { opacity: 0.9; }
+        .modal-footer .cancel-btn { background-color: var(--modal-cancel-btn-bg); color: var(--modal-cancel-btn-text); }
+        .modal-footer .cancel-btn:hover { background-color: rgba(var(--md-sys-color-primary-rgb), 0.08); }
+        .modal-footer .confirm-btn { background-color: var(--accent-color); color: var(--modal-confirm-btn-text); }
+        #confirm-modal.is-delete .modal-footer .confirm-btn { background-color: var(--md-sys-color-error); color: var(--md-sys-color-on-error); }
         
-        .checkbox-wrapper {
-            margin-top: 20px;
-        }
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-        .checkbox-visual {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #9ca3af;
-            border-radius: 5px;
-            margin-right: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: transparent;
-            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-        }
-        .checkbox-visual svg {
-            width: 12px;
-            height: 12px;
-            stroke: white;
-            stroke-width: 2.5;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transform: scale(0);
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out;
-        }
-        .checkbox-visual svg path {
-            stroke-dasharray: 24;
-            stroke-dashoffset: 24;
-            transition: stroke-dashoffset 0.3s ease-out;
-            transition-delay: 0.1s;
-        }
-        .visually-hidden:checked + .checkbox-container .checkbox-visual {
-            background-color: var(--modal-error-btn-bg);
-            border-color: var(--modal-error-btn-bg);
-        }
-        .visually-hidden:checked + .checkbox-container .checkbox-visual svg {
-            transform: scale(1);
-            opacity: 1;
-        }
-        .visually-hidden:checked + .checkbox-container .checkbox-visual svg path {
-            stroke-dashoffset: 0;
-        }
-        .checkbox-container:hover .checkbox-visual {
-            border-color: #6b7280;
-        }
-        .visually-hidden:focus-visible + .checkbox-container .checkbox-visual {
-            box-shadow: 0 0 0 3px rgba(255, 102, 102, 0.4);
-        }
+        #error-modal .modal-dialog, #browser-warning-modal .modal-dialog { background-color: var(--modal-error-bg); color: var(--modal-error-text); }
+        #error-modal .modal-dialog h2, #browser-warning-modal .modal-dialog h2, #error-modal .modal-dialog p, #browser-warning-modal .modal-dialog p { color: var(--modal-error-text); }
+        .modal-footer .confirm-btn.error { background-color: var(--modal-error-btn-bg); color: var(--modal-error-btn-text); }
+
+        .checkbox-wrapper { margin-top: 20px; }
+        .checkbox-container { display: flex; align-items: center; cursor: pointer; user-select: none; font-size: 15px; color: var(--text-secondary); }
+        .checkbox-visual { width: 18px; height: 18px; border: 2px solid var(--md-sys-color-on-error-container); border-radius: var(--md-sys-shape-corner-xs); margin-right: 12px; display: flex; justify-content: center; align-items: center; background-color: transparent; transition: background-color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
+        .checkbox-visual svg { width: 14px; height: 14px; stroke: var(--md-sys-color-on-error); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; transform: scale(0); opacity: 0; transition: transform 0.3s var(--md-animation-emphasized), opacity 0.2s var(--md-animation-standard); }
+        .visually-hidden:checked + .checkbox-container .checkbox-visual { background-color: var(--md-sys-color-error); border-color: var(--md-sys-color-error); }
+        .visually-hidden:checked + .checkbox-container .checkbox-visual svg { transform: scale(1); opacity: 1; }
+        .visually-hidden:focus-visible + .checkbox-container .checkbox-visual { box-shadow: 0 0 0 3px rgba(var(--md-sys-color-primary-rgb), 0.4); }
+        #browser-warning-modal .checkbox-container { color: var(--modal-error-text); }
         
-        #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%;}
-        #chat-window, header, #input-area { transition: background-color 0.2s, border-color 0.2s; }
-        header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+        #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%; border-radius: var(--md-sys-shape-corner-l) 0 0 var(--md-sys-shape-corner-l); }
+        #chat-window, header, #input-area { transition: background-color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
+        header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; height: 64px; }
         #mobile-menu-toggle { display: none; position: absolute; left: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); }
-        .title-container { display: flex; align-items: center; gap: 12px; margin: 0 auto; position: relative; }
-        .title-container h1 { margin: 0; font-size: 1.2em; color: var(--text-primary); }
-        .header-actions { display: flex; align-items: center; gap: 8px; position: absolute; right: 15px; }
-        .header-action-btn { padding: 0; width: 28px; height: 28px; border: 1px solid var(--border-color); background-color: transparent; color: var(--text-secondary); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .title-container { display: flex; align-items: center; gap: 8px; margin: 0 auto; position: relative; }
+        .title-container h1 { margin: 0; font-size: 1.4em; font-weight: 500; color: var(--text-primary); }
+        .header-actions { display: flex; align-items: center; gap: 8px; position: absolute; right: 20px; }
+        .header-action-btn { padding: 0; width: 40px; height: 40px; border: none; background-color: transparent; color: var(--text-secondary); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s var(--md-animation-standard); }
         .header-action-btn:hover { background-color: var(--history-item-hover-bg); }
-        .header-action-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .header-action-btn svg { width: 24px; height: 24px; fill: currentColor; }
         
-        .date-picker-trigger {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 4px 10px;
-            background-color: transparent; border: 1px solid var(--border-color);
-            border-radius: 6px; font-size: 0.9em; font-weight: 500;
-            color: var(--text-secondary); cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
+        .date-picker-trigger { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 16px; background-color: transparent; border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-sys-shape-corner-full); font-size: 0.9em; font-weight: 600; color: var(--md-sys-color-on-surface-variant); cursor: pointer; transition: all 0.2s var(--md-animation-standard); }
         .date-picker-trigger:hover { background-color: var(--history-item-hover-bg); }
-        .date-picker-trigger svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+        .date-picker-trigger svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
         
-        #chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: var(--chat-window-bg); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; min-height: 0; display: flex; flex-direction: column; }
-        .message { display: flex; margin-bottom: 15px; animation: fadeIn 0.5s ease-in-out; }
-        .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 18px; word-wrap: break-word; line-height: 1.4; }
-        .ai-message { justify-content: flex-start; } .ai-message .message-bubble { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); border-bottom-left-radius: 4px; }
-        .user-message { justify-content: flex-end; } .user-message .message-bubble { background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; }
-        .system-message { text-align: center; margin: 15px 0; font-size: 0.9em; color: var(--text-secondary); }
+        #chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: var(--chat-window-bg); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+        .message { display: flex; max-width: 85%; align-self: flex-start; animation: fadeIn 0.5s var(--md-animation-standard); }
+        .message-bubble { padding: 12px 18px; border-radius: var(--md-sys-shape-corner-l); word-wrap: break-word; line-height: 1.5; font-size: 1em; }
+        .ai-message .message-bubble { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); border-bottom-left-radius: var(--md-sys-shape-corner-xs); }
+        .user-message { align-self: flex-end; } .user-message .message-bubble { background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: var(--md-sys-shape-corner-xs); }
+        .system-message { text-align: center; margin: 15px 0; font-size: 0.9em; color: var(--text-secondary); align-self: center; }
         .system-message.success { color: var(--success-color); font-weight: bold; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        #input-area { display: flex; padding: 15px; border-top: 1px solid var(--border-color); background-color: var(--main-bg); flex-shrink: 0; align-items: center; }
-        #user-input { flex-grow: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; font-size: 16px; outline: none; transition: border-color 0.3s; background-color: var(--main-bg); color: var(--text-primary); }
+        #input-area { display: flex; padding: 12px 16px; border-top: 1px solid var(--border-color); background-color: var(--main-bg); flex-shrink: 0; align-items: center; gap: 12px; }
+        #user-input { flex-grow: 1; border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-sys-shape-corner-full); padding: 14px 20px; font-size: 16px; outline: none; transition: border-color 0.3s var(--md-animation-standard), box-shadow 0.3s var(--md-animation-standard); background-color: transparent; color: var(--text-primary); height: 52px; }
         #user-input::placeholder { color: var(--text-secondary); }
-        #user-input:focus { border-color: var(--accent-color); }
-        #user-input:disabled { background-color: var(--ai-msg-bg); cursor: not-allowed; }
-        #send-button { margin-left: 10px; padding: 0; width: 40px; height: 40px; border: none; background-color: var(--accent-color); color: white; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, opacity 0.3s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        #send-button svg { width: 20px; height: 20px; fill: currentColor; }
-        #send-button:hover:not(:disabled) { opacity: 0.85; }
-        #send-button:disabled { background-color: var(--accent-color); opacity: 0.5; cursor: not-allowed; }
+        #user-input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 1px var(--accent-color); }
+        #user-input:disabled { background-color: var(--ai-msg-bg); cursor: not-allowed; opacity: 0.7; }
+        #send-button { width: 52px; height: 52px; border: none; background-color: var(--accent-color); color: var(--md-sys-color-on-primary); border-radius: 50%; cursor: pointer; transition: background-color 0.3s var(--md-animation-standard), opacity 0.3s var(--md-animation-standard), transform 0.2s var(--md-animation-emphasized); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        #send-button svg { width: 24px; height: 24px; fill: currentColor; }
+        #send-button:hover:not(:disabled) { box-shadow: var(--md-sys-elevation-level-1); }
+        #send-button:active:not(:disabled) { transform: scale(0.95); }
+        #send-button:disabled { background-color: var(--accent-color); opacity: 0.4; cursor: not-allowed; }
         #sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 999; }
         .custom-select-wrapper { position: relative; display: inline-block; user-select: none; }
-        .select-selected { color: var(--text-primary); font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; padding: 2px 4px; border-radius: 6px; transition: background-color 0.2s; }
+        .select-selected { color: var(--text-primary); font-size: 1.4em; font-weight: 500; cursor: pointer; display: flex; align-items: center; padding: 4px 8px; border-radius: var(--md-sys-shape-corner-m); transition: background-color 0.2s var(--md-animation-standard); }
         .select-selected:hover { background-color: var(--ai-msg-bg); }
-        .select-arrow { margin-left: 6px; width: 16px; height: 16px; fill: currentColor; transition: transform 0.2s ease; }
+        .select-arrow { margin-left: 6px; width: 24px; height: 24px; fill: currentColor; transition: transform 0.3s var(--md-animation-emphasized); }
         .select-selected.select-arrow-active .select-arrow { transform: rotate(180deg); }
-        .select-items { list-style: none; padding: 6px; margin: 0; position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); background-color: var(--context-menu-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--context-menu-shadow); min-width: 100px; text-align: center; z-index: 1101; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s; }
+        .select-items { list-style: none; padding: 8px; margin: 0; position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); background-color: var(--context-menu-bg); border-radius: var(--md-sys-shape-corner-m); box-shadow: var(--context-menu-shadow); min-width: 120px; text-align: center; z-index: 1101; opacity: 0; visibility: hidden; transition: opacity 0.1s var(--md-animation-standard), transform 0.1s var(--md-animation-standard), visibility 0.1s; }
         .select-items.show { opacity: 1; visibility: visible; }
-        .select-item { color: var(--sidebar-text); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; position: relative; overflow: hidden; }
-        .select-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--context-menu-hover-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.2s ease; }
-        .select-item:hover::before { opacity: 1; }
-        .visually-hidden { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+        .select-item { color: var(--text-primary); padding: 12px 16px; border-radius: var(--md-sys-shape-corner-s); cursor: pointer; transition: background-color 0.2s var(--md-animation-standard); font-size: 1.1em; }
+        .select-item:hover { background-color: var(--context-menu-hover-bg); }
 
-        /* --- 日期选择器样式 --- */
-        #date-picker-popover {
-            position: absolute; top: calc(100% + 10px); 
-            left: 0; 
-            transform: scale(0.95); z-index: 1100;
-            background-color: var(--context-menu-bg); border-radius: 12px;
-            padding: 12px 16px 16px; box-shadow: var(--context-menu-shadow);
-            border: 1px solid var(--border-color); width: 300px;
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            user-select: none; opacity: 0; visibility: hidden;
-            transform-origin: top center;
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-        }
+        /* --- Date Picker --- */
+        #date-picker-popover { position: absolute; top: calc(100% + 10px); right: 0; transform: scale(0.95); z-index: 1100; background-color: var(--md-sys-color-surface-container-high); border-radius: var(--md-sys-shape-corner-xl); padding: 12px 16px 16px; box-shadow: var(--md-sys-elevation-level-3); width: 340px; user-select: none; opacity: 0; visibility: hidden; transform-origin: top right; transition: opacity 0.2s var(--md-animation-emphasized), transform 0.2s var(--md-animation-emphasized), visibility 0.2s; }
         #date-picker-popover.show { opacity: 1; visibility: visible; transform: scale(1); }
         .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 0; }
-        .dp-month-year { font-weight: 600; font-size: 1.1em; color: var(--text-primary); }
-        .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: 1px solid var(--border-color); width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 8px; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; 
-            touch-action: manipulation;
-        }
+        .dp-month-year { font-weight: 600; font-size: 1.1em; color: var(--text-primary); line-height: 1.2; }
+        .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: none; width: 40px; height: 40px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 50%; transition: background-color 0.2s var(--md-animation-standard), opacity 0.2s var(--md-animation-standard); touch-action: manipulation; }
         .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
         .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
-        #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; }
-        .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; }
-        .dp-grid-wrapper { position: relative; overflow: hidden; height: 236px; }
-        .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .dp-day { display: flex; justify-content: center; align-items: center; height: 36px; border-radius: 50%; font-size: 0.9em; border: 1px solid transparent; color: var(--text-primary); transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+        #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; justify-items: center; }
+        .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1; /* JANK FIX 2 */ }
+        .dp-grid-wrapper { position: relative; overflow: hidden; height: 264px; }
+        .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; justify-items: center; }
+        .dp-day { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 0.9em; border: 2px solid transparent; color: var(--text-primary); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
         .dp-day.other-month { color: var(--text-secondary); }
-        .dp-day.disabled { pointer-events: none; opacity: 0.5; }
+        .dp-day.disabled { pointer-events: none; color: var(--md-sys-color-outline); }
         .dp-day.available { cursor: pointer; }
         .dp-day.available:hover { background-color: var(--history-item-hover-bg); }
-        .dp-day.today { border-color: var(--accent-color); }
-        .dp-day.selected { background-color: var(--accent-color); color: white !important; border-color: var(--accent-color); font-weight: bold; }
-        .dp-day.selected:hover { opacity: 0.9; background-color: var(--accent-color); }
-
+        .dp-day.today { border-color: var(--md-sys-color-outline); }
+        .dp-day.selected, .dp-day.available.selected:hover { background-color: var(--accent-color); color: var(--md-sys-color-on-primary) !important; border-color: var(--accent-color); font-weight: bold; }
+        
         @media (max-width: 768px) {
-            #sidebar { position: fixed; top: 0; left: -260px; height: 100%; z-index: 1000; transition: left 0.3s ease-in-out; border-right: 1px solid var(--border-color); }
+            #sidebar { position: fixed; top: 0; left: -260px; height: 100%; z-index: 1000; transition: left 0.3s var(--md-animation-standard); border-right: none; }
             body.sidebar-open #sidebar { left: 0; }
             body.sidebar-open #sidebar-overlay { display: block; }
             #sidebar-toggle-button { display: none; }
             #mobile-menu-toggle { display: block; }
-            #app-wrapper.sidebar-collapsed #sidebar { width: 260px; }
+            #game-container { border-radius: 0; }
+            #app-wrapper.sidebar-collapsed #sidebar { width: 260px; padding: 12px; }
             #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: row; align-items: center; gap: 0; }
-            #app-wrapper.sidebar-collapsed #new-chat-button { width: auto; height: auto; padding: 10px; flex-grow: 1; }
+            #app-wrapper.sidebar-collapsed #new-chat-button { width: auto; height: 56px; padding: 0 24px; flex-grow: 1; border-radius: var(--md-sys-shape-corner-l); }
             #app-wrapper.sidebar-collapsed #new-chat-button span:not(.icon) { display: inline-block; }
-            #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin-right: 12px; }
+            #app-wrapper.sidebar-collapsed #new-chat-button .icon { margin-right: 16px; }
             #app-wrapper.sidebar-collapsed #sidebar-toggle-button { display: none; }
             #app-wrapper.sidebar-collapsed #history-list-container { display: block; }
-            #game-container { max-width: 100%; border-radius: 0; border: none; }
             header { padding-top: calc(10px + env(safe-area-inset-top)); }
             #input-area { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
             .header-actions { position: absolute; right: 15px; margin-left: 0; }
-            
-            .date-picker-trigger { padding: 4px; width: 28px; height: 28px; }
-            .date-picker-trigger #daily-puzzle-label { display: none; }
-            #date-picker-popover { left: 50%; transform: translateX(-50%) scale(0.95); width: calc(100vw - 20px); max-width: 320px; }
-            #date-picker-popover.show { transform: translateX(-50%) scale(1); }
+
+            .date-picker-trigger {
+                padding: 0;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border-width: 1px;
+            }
+            .date-picker-trigger #daily-puzzle-label {
+                display: none;
+            }
+            .date-picker-trigger svg {
+                margin: 0;
+            }
+
+            #date-picker-popover { 
+                left: auto;
+                right: 15px;
+                transform: scale(0.95); 
+                transform-origin: top right;
+                width: calc(100vw - 30px); 
+                max-width: 340px; 
+            }
+            #date-picker-popover.show { 
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -286,8 +322,10 @@
                 <div class="title-container">
                     <h1>猜盐 - </h1>
                     <div id="game-mode-dropdown" class="custom-select-wrapper"></div>
+                </div>
+                <div class="header-actions">
                     <button id="daily-puzzle-button" class="date-picker-trigger" title="选择往日谜题" style="display: none;">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 8.5v9.25A3.25 3.25 0 0 1 17.75 21H6.25A3.25 3.25 0 0 1 3 17.75V8.5h18ZM7.25 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5ZM12 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm-4.75-4.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm1-7.5A3.25 3.25 0 0 1 21 6.25V7H3v-.75A3.25 3.25 0 0 1 6.25 3h11.5Z" fill="currentColor"/></svg>
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg "><path d="M21 8.5v9.25A3.25 3.25 0 0 1 17.75 21H6.25A3.25 3.25 0 0 1 3 17.75V8.5h18ZM7.25 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5ZM12 15a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm-4.75-4.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.75 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm1-7.5A3.25 3.25 0 0 1 21 6.25V7H3v-.75A3.25 3.25 0 0 1 6.25 3h11.5Z" fill="currentColor"/></svg>
                         <span id="daily-puzzle-label">选择日期</span>
                     </button>
                     <div id="date-picker-popover">
@@ -299,13 +337,11 @@
                         <div id="dp-weekdays-container"></div>
                         <div class="dp-grid-wrapper"></div>
                     </div>
-                </div>
-                <div class="header-actions">
                     <button id="export-button" class="header-action-btn" title="导出历史记录">
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 4.75a1.5 1.5 0 0 0-1.5 1.5v11.5a1.5 1.5 0 0 0 1.5 1.5h11.5a1.5 1.5 0 0 0 1.5-1.5v-4a1 1 0 1 1 2 0v4a3.5 3.5 0 0 1-3.5 3.5H6.25a3.5 3.5 0 0 1-3.5-3.5V6.25a3.5 3.5 0 0 1 3.5-3.5h4a1 1 0 1 1 0 2h-4Zm6.5-1a1 1 0 0 1 1-1h6.5a1 1 0 0 1 1 1v6.5a1 1 0 1 1-2 0V6.164l-4.793 4.793a1 1 0 1 1-1.414-1.414l4.793-4.793H13.75a1 1 0 0 1-1-1Z"/></svg>
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg "><path d="M6.25 4.75a1.5 1.5 0 0 0-1.5 1.5v11.5a1.5 1.5 0 0 0 1.5 1.5h11.5a1.5 1.5 0 0 0 1.5-1.5v-4a1 1 0 1 1 2 0v4a3.5 3.5 0 0 1-3.5 3.5H6.25a3.5 3.5 0 0 1-3.5-3.5V6.25a3.5 3.5 0 0 1 3.5-3.5h4a1 1 0 1 1 0 2h-4Zm6.5-1a1 1 0 0 1 1-1h6.5a1 1 0 0 1 1 1v6.5a1 1 0 1 1-2 0V6.164l-4.793 4.793a1 1 0 1 1-1.414-1.414l4.793-4.793H13.75a1 1 0 0 1-1-1Z"/></svg>
                     </button>
                     <button id="import-button" class="header-action-btn" title="导入历史记录">
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z"/></svg>
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg "><path d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z"/></svg>
                     </button>
                 </div>
             </header>
@@ -313,7 +349,7 @@
             <div id="input-area">
                 <input type="text" id="user-input" placeholder="请输入你的提问或诊断..." disabled>
                 <button id="send-button" disabled title="发送">
-                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.815 12.197-7.532 1.256a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 0 0 0-1.342l-18-9c-.614-.307-1.283.304-1.035.943l2.598 6.957a.5.5 0 0 0 .386.319l7.532 1.255a.2.2 0 0 1 0 .394Z"/></svg>
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg "><path d="m12.815 12.197-7.532 1.256a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 0 0 0-1.342l-18-9c-.614-.307-1.283.304-1.035.943l2.598 6.957a.5.5 0 0 0 .386.319l7.532 1.255a.2.2 0 0 1 0 .394Z"/></svg>
                 </button>
             </div>
         </main>
@@ -322,8 +358,8 @@
     <input type="file" id="import-file-input" accept=".json" style="display: none;">
 
     <div id="context-menu">
-        <div class="context-menu-item" id="rename-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25-1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg><span>重命名</span></div>
-        <div class="context-menu-item delete" id="delete-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.22-2.365.468a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193v-.443A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25-.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg><span>删除</span></div>
+        <div class="context-menu-item" id="rename-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg " viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25-1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg><span>重命名</span></div>
+        <div class="context-menu-item delete" id="delete-option"><svg class="context-menu-icon" xmlns="http://www.w3.org/2000/svg " viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.22-2.365.468a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193v-.443A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25-.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg><span>删除</span></div>
     </div>
     
     <div class="modal-overlay" id="confirm-modal">
@@ -338,7 +374,6 @@
         <div class="modal-dialog"><div class="modal-header"><h2 id="error-modal-title">错误</h2><button class="close-btn" id="error-modal-close-btn">×</button></div><div class="modal-body"><p id="error-modal-message"></p></div><div class="modal-footer"><button class="confirm-btn error" id="error-modal-ok-btn">好的</button></div></div>
     </div>
     
-    <!-- 新增：浏览器兼容性警告模态框 -->
     <div class="modal-overlay" id="browser-warning-modal">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -364,7 +399,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         // --- DOM Elements ---
@@ -408,7 +442,6 @@
         const errorModalMessage = document.getElementById('error-modal-message');
         const errorModalOkBtn = document.getElementById('error-modal-ok-btn');
         const errorModalCloseBtn = document.getElementById('error-modal-close-btn');
-        // 新增：浏览器警告模态框元素
         const browserWarningModal = document.getElementById('browser-warning-modal');
         const browserWarningTitle = document.getElementById('browser-warning-title');
         const browserWarningMessage = document.getElementById('browser-warning-message');
@@ -417,10 +450,10 @@
         const dontShowAgainCheckbox = document.getElementById('dont-show-again-checkbox');
         
         // --- App State & Constants ---
-        const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun', 'Referer': 'https://xiaoce.fun/guessdisease', 'Fun-Device': 'web', 'Dnt': '1' };
+        const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun ', 'Referer': 'https://xiaoce.fun/guessdisease ', 'Fun-Device': 'web', 'Dnt': '1' };
         const GAME_MODES = {
-            disease: { title: '猜病', typeParam: 'guess_disease', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage', storagePrefix: 'guessDisease_chat_', activeKey: 'activeGuessDiseaseChat', greeting: '你好，医生。', placeholder: '请输入你的提问或诊断…', successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉' },
-            crime: { title: '猜罪', typeParam: 'guess_crime', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage', storagePrefix: 'guessCrime_chat_', activeKey: 'activeGuessCrimeChat', greeting: '你好，律师。', placeholder: '请输入你的提问或罪名猜测', successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉' }
+            disease: { title: '猜病', typeParam: 'guess_disease', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage ', storagePrefix: 'guessDisease_chat_', activeKey: 'activeGuessDiseaseChat', greeting: '你好，医生。', placeholder: '请输入你的提问或诊断…', successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉' },
+            crime: { title: '猜罪', typeParam: 'guess_crime', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage ', storagePrefix: 'guessCrime_chat_', activeKey: 'activeGuessCrimeChat', greeting: '你好，律师。', placeholder: '请输入你的提问或罪名猜测', successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉' }
         };
         let currentGameMode = 'disease';
         let chatHistory = [];
@@ -575,7 +608,7 @@
             
             newGrid.offsetHeight; 
 
-            const transitionStyle = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            const transitionStyle = 'transform 0.4s var(--md-animation-standard)';
             newGrid.style.transition = transitionStyle;
             if (oldGrid) oldGrid.style.transition = transitionStyle;
 
@@ -710,9 +743,12 @@
             if (isGameActive) {
                 placeholder = config.placeholder;
                 const isNewChat = currentChatKey === null;
-                if (!isMobile && dailySuccessCount !== null) {
+                if (dailySuccessCount !== null) {
                     const dayText = isNewChat && !targetDate ? '今日' : '该日';
-                    placeholder += ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                    const successText = ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                    if (!isMobile) {
+                        placeholder += successText;
+                    }
                 }
             } else {
                 if (currentVictoryRank !== null) {
@@ -798,26 +834,16 @@
         }
 
         async function checkBrowserCompatibility() {
-            // 优先检查永久忽略标记
-            if (localStorage.getItem('suppressBrowserWarning') === 'true') {
+            if (localStorage.getItem('suppressBrowserWarning') === 'true' || sessionStorage.getItem('browserVersionWarningShown') === 'true') {
                 return;
             }
-            // 然后检查会话忽略标记
-            if (sessionStorage.getItem('browserVersionWarningShown') === 'true') {
-                return;
-            }
-
             const isFeatureSupported = () => {
                 const testEl = document.createElement('div');
                 testEl.style.display = 'flex';
                 testEl.style.gap = '1px';
-                const isGapSupported = testEl.style.gap === '1px';
-                const isBackdropSupported = 'backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style;
-                return isGapSupported && isBackdropSupported;
+                return testEl.style.gap === '1px' && ('backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style);
             };
-            
             if (!isFeatureSupported()) {
-                // 调用新的、带复选框的警告对话框
                 await showBrowserWarningDialog({
                     title: '浏览器兼容性提示',
                     message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Edge）以获得最佳体验。'
@@ -879,14 +905,18 @@
             if (!contextMenuTarget) return;
             const key = contextMenuTarget.dataset.key;
             const titleSpan = contextMenuTarget.querySelector('span');
+            if (!titleSpan) return;
             const currentTitle = titleSpan.textContent;
+            
             const input = document.createElement('input');
             input.type = 'text';
             input.value = currentTitle;
             input.style.cssText = 'width:100%;padding:0;margin:0;border:none;background:transparent;color:inherit;font:inherit;outline:none;';
+            
             contextMenuTarget.replaceChild(input, titleSpan);
             input.focus();
             input.select();
+
             const saveRename = () => {
                 const newTitle = input.value.trim();
                 if (newTitle && newTitle !== currentTitle) {
@@ -894,50 +924,59 @@
                         const savedData = JSON.parse(localStorage.getItem(key) || '{}');
                         savedData.title = newTitle;
                         localStorage.setItem(key, JSON.stringify(savedData));
-                    } catch (e) { console.error("重命名失败", e); }
+                        titleSpan.textContent = newTitle;
+                    } catch (e) { 
+                        console.error("重命名失败", e); 
+                        titleSpan.textContent = currentTitle;
+                    }
+                } else {
+                    titleSpan.textContent = currentTitle;
                 }
-                titleSpan.textContent = newTitle || currentTitle;
-                contextMenuTarget.replaceChild(titleSpan, input);
+                if (contextMenuTarget.contains(input)) {
+                   contextMenuTarget.replaceChild(titleSpan, input);
+                }
+                input.removeEventListener('keydown', onKeydown);
             };
-            input.addEventListener('blur', saveRename);
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') input.blur();
-                if (e.key === 'Escape') contextMenuTarget.replaceChild(titleSpan, input);
-            });
+
+            const onKeydown = (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                } else if (e.key === 'Escape') {
+                    input.removeEventListener('blur', saveRename);
+                    titleSpan.textContent = currentTitle;
+                    if (contextMenuTarget.contains(input)) {
+                       contextMenuTarget.replaceChild(titleSpan, input);
+                    }
+                }
+            };
+
+            input.addEventListener('blur', saveRename, { once: true });
+            input.addEventListener('keydown', onKeydown);
         }
 
-        // 浏览器警告对话框函数
         function showBrowserWarningDialog({ title = '提示', message = '' }) {
             return new Promise(resolve => {
                 browserWarningTitle.textContent = title;
                 browserWarningMessage.textContent = message;
-                dontShowAgainCheckbox.checked = false; // 每次打开都重置复选框状态
+                dontShowAgainCheckbox.checked = false;
                 let resolver = null;
-
-                const show = () => { browserWarningModal.classList.add('show'); };
-                
+                const show = () => browserWarningModal.classList.add('show');
                 const hide = () => {
-                    // 在关闭时检查复选框
                     if (dontShowAgainCheckbox.checked) {
                         localStorage.setItem('suppressBrowserWarning', 'true');
                     }
-                    // 无论如何，都设置会话存储，以便在当前会话中不再显示
                     sessionStorage.setItem('browserVersionWarningShown', 'true');
-
                     browserWarningModal.classList.remove('show');
                     if (resolver) { resolver(); resolver = null; }
                     browserWarningOkBtn.removeEventListener('click', handleAction);
                     browserWarningCloseBtn.removeEventListener('click', handleAction);
                     browserWarningModal.removeEventListener('click', handleOverlayClick);
                 };
-
                 const handleAction = () => hide();
-                const handleOverlayClick = (e) => { if (e.target === browserWarningModal) { handleAction(); } };
-
+                const handleOverlayClick = (e) => { if (e.target === browserWarningModal) handleAction(); };
                 browserWarningOkBtn.addEventListener('click', handleAction);
                 browserWarningCloseBtn.addEventListener('click', handleAction);
                 browserWarningModal.addEventListener('click', handleOverlayClick);
-                
                 show();
                 resolver = resolve;
             });
@@ -948,7 +987,7 @@
                 errorModalTitle.textContent = title;
                 errorModalMessage.textContent = message;
                 let resolver = null;
-                const show = () => { errorModal.classList.add('show'); };
+                const show = () => errorModal.classList.add('show');
                 const hide = () => {
                     errorModal.classList.remove('show');
                     if (resolver) { resolver(); resolver = null; }
@@ -957,7 +996,7 @@
                     errorModal.removeEventListener('click', handleOverlayClick);
                 };
                 const handleAction = () => hide();
-                const handleOverlayClick = (e) => { if (e.target === errorModal) { handleAction(); } };
+                const handleOverlayClick = (e) => { if (e.target === errorModal) handleAction(); };
                 errorModalOkBtn.addEventListener('click', handleAction);
                 errorModalCloseBtn.addEventListener('click', handleAction);
                 errorModal.addEventListener('click', handleOverlayClick);
@@ -970,7 +1009,7 @@
                 infoModalTitle.textContent = title;
                 infoModalMessage.textContent = message;
                 let resolver = null;
-                const show = () => { infoModal.classList.add('show'); };
+                const show = () => infoModal.classList.add('show');
                 const hide = () => {
                     infoModal.classList.remove('show');
                     if (resolver) { resolver(); resolver = null; }
@@ -979,7 +1018,7 @@
                     infoModal.removeEventListener('click', handleOverlayClick);
                 };
                 const handleAction = () => hide();
-                const handleOverlayClick = (e) => { if (e.target === infoModal) { handleAction(); } };
+                const handleOverlayClick = (e) => { if (e.target === infoModal) handleAction(); };
                 infoModalOkBtn.addEventListener('click', handleAction);
                 infoModalCloseBtn.addEventListener('click', handleAction);
                 infoModal.addEventListener('click', handleOverlayClick);
@@ -993,8 +1032,9 @@
                 confirmModalMessage.textContent = message;
                 confirmModalConfirmBtn.textContent = confirmText;
                 confirmModalConfirmBtn.className = `confirm-btn ${confirmClass}`;
+                confirmModal.classList.toggle('is-delete', confirmClass === 'delete');
                 let resolver = null;
-                const show = () => { confirmModal.classList.add('show'); };
+                const show = () => confirmModal.classList.add('show');
                 const hide = (value) => {
                     confirmModal.classList.remove('show');
                     if (resolver) { resolver(value); resolver = null; }
@@ -1005,7 +1045,7 @@
                 };
                 const handleConfirm = () => hide(true);
                 const handleCancel = () => hide(false);
-                const handleOverlayClick = (e) => { if (e.target === confirmModal) { handleCancel(); } };
+                const handleOverlayClick = (e) => { if (e.target === confirmModal) handleCancel(); };
                 confirmModalConfirmBtn.addEventListener('click', handleConfirm);
                 confirmModalCancelBtn.addEventListener('click', handleCancel);
                 confirmModalCloseBtn.addEventListener('click', handleCancel);
@@ -1017,7 +1057,12 @@
         async function handleDelete() {
             if (!contextMenuTarget) return;
             const key = contextMenuTarget.dataset.key;
-            const confirmed = await showConfirmDialog({ title: '永久删除对话', message: '删除后，该对话将不可恢复。确认删除吗？', confirmText: '删除' });
+            const confirmed = await showConfirmDialog({ 
+                title: '永久删除对话', 
+                message: '删除后，该对话将不可恢复。确认删除吗？', 
+                confirmText: '删除',
+                confirmClass: 'delete' 
+            });
             if (confirmed) {
                 localStorage.removeItem(key);
                 populateSidebar();
@@ -1027,17 +1072,20 @@
             }
         }
         function createCustomDropdown() {
+            gameModeDropdown.innerHTML = '';
             const selected = document.createElement('div');
             selected.className = 'select-selected';
             const selectedText = document.createElement('span');
             selectedText.id = 'selected-game-mode-text';
             selectedText.textContent = GAME_MODES[currentGameMode].title;
             selected.appendChild(selectedText);
+
             const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             arrow.setAttribute('class', 'select-arrow');
             arrow.setAttribute('viewBox', '0 0 20 20');
             arrow.innerHTML = `<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />`;
             selected.appendChild(arrow);
+            
             const items = document.createElement('ul');
             items.className = 'select-items';
             Object.keys(GAME_MODES).forEach(key => {
@@ -1057,9 +1105,12 @@
                 });
                 items.appendChild(li);
             });
+
             gameModeDropdown.appendChild(selected);
             gameModeDropdown.appendChild(items);
+            
             selected.addEventListener('click', (e) => {
+                e.stopPropagation();
                 datePickerPopover.classList.remove('show');
                 items.classList.toggle('show');
                 selected.classList.toggle('select-arrow-active');
@@ -1080,28 +1131,38 @@
             localStorage.setItem('lastGameMode', currentGameMode);
             document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
             activeDatesCache = {};
+            createCustomDropdown();
             await startNewChat();
         }
         async function handleExport() {
             const allData = {};
             const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
-            const keysToExport = ['lastGameMode', 'sidebarCollapsedState', 'suppressBrowserWarning'];
+            const settingsKeys = ['lastGameMode', 'sidebarCollapsedState', 'suppressBrowserWarning'];
+            const chatKeysFound = [];
+
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if (keysToExport.includes(key) || prefixes.some(prefix => key.startsWith(prefix))) {
+                const isChatKey = prefixes.some(prefix => key.startsWith(prefix));
+                
+                if (isChatKey) {
+                    chatKeysFound.push(key);
+                    allData[key] = localStorage.getItem(key);
+                } else if (settingsKeys.includes(key)) {
                     allData[key] = localStorage.getItem(key);
                 }
             }
-            if (Object.keys(allData).length <= keysToExport.length) {
+
+            if (chatKeysFound.length === 0) {
                 await showInfoDialog({ title: '导出提示', message: '没有可导出的历史记录。' });
                 return;
             }
+
             const jsonString = JSON.stringify(allData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'caiyan.json';
+            a.download = `caiyan_backup_${getFormattedDate()}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1153,23 +1214,16 @@
         // --- Event Handlers & Initialization ---
         function setupThemeColorSync() {
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-            if (!themeColorMeta) {
-                console.warn('Theme color meta tag not found.');
-                return;
-            }
-
-            const lightThemeColor = '#ffffff';
-            const darkThemeColor = '#292a2d';
-
-            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            if (!themeColorMeta) return;
 
             const updateThemeColor = () => {
-                const newColor = darkModeMediaQuery.matches ? darkThemeColor : lightThemeColor;
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const newColor = isDark ? '#141318' : '#fdf8fd';
                 themeColorMeta.setAttribute('content', newColor);
             };
 
             updateThemeColor();
-            darkModeMediaQuery.addEventListener('change', updateThemeColor);
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeColor);
         }
 
         function setupEventHandlers() {
@@ -1198,15 +1252,21 @@
                 }
             });
             userInput.addEventListener('focus', () => {
-                if (isMobile && isGameActive && dailySuccessCount !== null) {
+                if (isGameActive && dailySuccessCount !== null) {
                     const isNewChat = currentChatKey === null;
                     const dayText = isNewChat && !targetDate ? '今日' : '该日';
-                    userInput.placeholder = `${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                    userInput.placeholder = `${GAME_MODES[currentGameMode].placeholder} ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
                 }
             });
             userInput.addEventListener('blur', () => {
-                if (isMobile && isGameActive) {
-                    userInput.placeholder = GAME_MODES[currentGameMode].placeholder;
+                if (isGameActive) {
+                    let placeholder = GAME_MODES[currentGameMode].placeholder;
+                    if (!isMobile && dailySuccessCount !== null) {
+                        const isNewChat = currentChatKey === null;
+                        const dayText = isNewChat && !targetDate ? '今日' : '该日';
+                        placeholder += ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                    }
+                    userInput.placeholder = placeholder;
                 }
             });
             const showContextMenu = (target, x, y) => {
@@ -1215,8 +1275,8 @@
                 datePickerPopover.classList.remove('show');
 
                 requestAnimationFrame(() => {
-                    const menuWidth = contextMenu.offsetWidth || 160;
-                    const menuHeight = contextMenu.offsetHeight || 100;
+                    const menuWidth = contextMenu.offsetWidth;
+                    const menuHeight = contextMenu.offsetHeight;
                     const viewWidth = window.innerWidth;
                     const viewHeight = window.innerHeight;
 
@@ -1238,9 +1298,7 @@
             });
 
             let longPressTimer = null;
-            let touchStartX = 0;
-            let touchStartY = 0;
-
+            let touchStartX = 0, touchStartY = 0;
             historyListContainer.addEventListener('touchstart', (e) => {
                 const target = e.target.closest('.history-item');
                 if (target) {
@@ -1248,67 +1306,56 @@
                     touchStartY = e.touches[0].clientY;
                     longPressTimer = setTimeout(() => {
                         longPressTimer = null;
-                        if (navigator.vibrate) {
-                            navigator.vibrate(100);
-                        }
-                        
+                        if (navigator.vibrate) navigator.vibrate(50);
                         showContextMenu(target, e.touches[0].clientX, e.touches[0].clientY);
-                    }, 500); // 500毫秒定义为长按
+                    }, 500);
                 }
             }, { passive: true });
-
             historyListContainer.addEventListener('touchmove', (e) => {
-                const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
-                const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
-                if (longPressTimer && (deltaX > 10 || deltaY > 10)) {
+                if (longPressTimer && (Math.abs(e.touches[0].clientX - touchStartX) > 10 || Math.abs(e.touches[0].clientY - touchStartY) > 10)) {
                     clearTimeout(longPressTimer);
                     longPressTimer = null;
                 }
             });
-
-            historyListContainer.addEventListener('touchend', () => {
-                if (longPressTimer) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-            });
-
-            historyListContainer.addEventListener('touchcancel', () => {
-                if (longPressTimer) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-            });
-
+            const clearLongPress = () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } };
+            historyListContainer.addEventListener('touchend', clearLongPress);
+            historyListContainer.addEventListener('touchcancel', clearLongPress);
 
             document.addEventListener('click', (e) => {
-                if (contextMenu.classList.contains('show') && !contextMenu.contains(e.target) && !e.target.closest('.history-item')) {
+                if (contextMenu.classList.contains('show') && !contextMenu.contains(e.target)) {
                     contextMenu.classList.remove('show');
                 }
                 if (!gameModeDropdown.contains(e.target)) {
                     closeDropdown();
                 }
-                if (!datePickerPopover.parentElement.contains(e.target)) {
+                if (datePickerPopover.classList.contains('show') && !datePickerPopover.contains(e.target) && !e.target.closest('.header-actions')) {
                     datePickerPopover.classList.remove('show');
                 }
             });
-            renameOption.addEventListener('click', handleRename);
-            deleteOption.addEventListener('click', handleDelete);
+            renameOption.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleRename();
+                contextMenu.classList.remove('show');
+            });
+            deleteOption.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleDelete();
+                contextMenu.classList.remove('show');
+            });
+
             exportButton.addEventListener('click', handleExport);
             importButton.addEventListener('click', () => importFileInput.click());
             importFileInput.addEventListener('change', handleImport);
+
             dailyPuzzleButton.addEventListener('click', async (e) => {
                 e.stopPropagation();
-
-                // --- MODIFICATION START ---
-                // 在打开日期选择器之前，先关闭游戏模式下拉框
                 closeDropdown();
-                // --- MODIFICATION END ---
                 
                 if (datePickerPopover.classList.contains('show')) {
                     datePickerPopover.classList.remove('show');
                     return;
                 }
+                
                 const activeDatesSet = await fetchActiveDates();
                 if (!activeDatesSet || activeDatesSet.size === 0) return;
                 
@@ -1319,6 +1366,7 @@
                 updateNavButtonStates(activeDatesSet);
                 datePickerPopover.classList.add('show');
             });
+
             dpPrevMonthBtn.addEventListener('click', async () => transitionToMonth('prev', await fetchActiveDates()));
             dpNextMonthBtn.addEventListener('click', async () => transitionToMonth('next', await fetchActiveDates()));
             dpGridWrapper.addEventListener('click', (e) => {
@@ -1341,8 +1389,8 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js')
-                        .then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); })
-                        .catch(err => { console.log('ServiceWorker registration failed: ', err); });
+                        。then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); })
+                        。catch(err => { console.log('ServiceWorker registration failed: ', err); });
                 });
             }
             await checkBrowserCompatibility();
@@ -1355,30 +1403,39 @@
                 currentGameMode = lastMode;
             }
             document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
+            
             const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            dpWeekdaysContainer.innerHTML = '';
             weekdays.forEach(day => {
                 const dayEl = document.createElement('div');
                 dayEl.className = 'dp-weekday';
                 dayEl.textContent = day;
                 dpWeekdaysContainer.appendChild(dayEl);
             });
+            
             createCustomDropdown();
             setupEventHandlers();
-            populateSidebar();
+            
             const config = GAME_MODES[currentGameMode];
-            const activeChatState = localStorage.getItem(config.activeKey);
-            if (activeChatState === 'new' || !activeChatState) {
-                await startNewChat();
-            } else if (activeChatState) {
-                await loadChat(activeChatState);
-            } else {
+            const activeChatKey = localStorage.getItem(config.activeKey);
+            
+            let keyToLoad = null;
+            if (activeChatKey && activeChatKey !== 'new') {
+                keyToLoad = activeChatKey;
+            } else if (!activeChatKey) {
                 const keys = Object.keys(localStorage).filter(k => k.startsWith(config.storagePrefix)).sort().reverse();
                 if (keys.length > 0) {
-                    await loadChat(keys[0]);
-                } else {
-                    await startNewChat();
+                    keyToLoad = keys[0];
                 }
             }
+
+            if (keyToLoad) {
+                await loadChat(keyToLoad);
+            } else {
+                await startNewChat();
+            }
+            
+            populateSidebar();
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
