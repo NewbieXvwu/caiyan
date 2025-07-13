@@ -1425,8 +1425,17 @@
                     themeColorMeta.setAttribute('content', newColor);
                 };
 
-                updateThemeColor();
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeColor);
+                updateThemeColor(); // 首次加载时更新颜色
+
+                // 增加特性检测以兼容旧版浏览器
+                const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+                
+                if (mediaQueryList.addEventListener) {
+                    mediaQueryList.addEventListener('change', updateThemeColor);
+                } 
+                else if (mediaQueryList.addListener) {
+                    mediaQueryList.addListener(updateThemeColor);
+                }
             }
 
             function setupEventHandlers() {
