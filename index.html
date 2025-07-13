@@ -149,7 +149,13 @@
         #sidebar-toggle-button:hover { background-color: var(--history-item-hover-bg); }
         #history-list-container { list-style: none; margin: 0; padding: 0 4px; overflow-y: auto; flex-grow: 1; }
         .history-group-header { font-size: 0.8em; color: var(--sidebar-group-text); padding: 16px 16px 4px; font-weight: 500; }
-        .history-item { display: flex; align-items: center; height: 48px; padding: 0 16px; border-radius: var(--md-sys-shape-corner-full); cursor: pointer; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        .history-item { display: flex; align-items: center; height: 48px; padding: 0 16px; border-radius: var(--md-sys-shape-corner-full); cursor: pointer; margin-bottom: 2px; font-size: 0.9em; color: var(--sidebar-text); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        .history-item > span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0; 
+        }
         .history-item:hover { background-color: var(--history-item-hover-bg); }
         .history-item.active { background-color: var(--history-item-active-bg); color: var(--history-item-active-text); font-weight: 600; }
         #app-wrapper.sidebar-collapsed #sidebar { width: 80px; padding: 12px 16px; }
@@ -198,11 +204,39 @@
         
         #game-container { flex-grow: 1; background-color: var(--main-bg); display: flex; flex-direction: column; overflow: hidden; height: 100%; border-radius: var(--md-sys-shape-corner-l) 0 0 var(--md-sys-shape-corner-l); }
         #chat-window, header, #input-area { transition: background-color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
-        header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); background-color: var(--main-bg); text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; height: 64px; }
-        #mobile-menu-toggle { display: none; position: absolute; left: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); }
-        .title-container { display: flex; align-items: center; gap: 8px; margin: 0 auto; position: relative; }
+
+        header { 
+            padding: 12px 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            background-color: var(--main-bg); 
+            flex-shrink: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            position: relative; 
+            height: 64px; 
+        }
+        #mobile-menu-toggle { 
+            display: none;
+            background: none; 
+            border: none; 
+            font-size: 1.5em; 
+            cursor: pointer; 
+            color: var(--text-secondary); 
+        }
+        .title-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            position: relative;
+        }
         .title-container h1 { margin: 0; font-size: 1.4em; font-weight: 500; color: var(--text-primary); }
-        .header-actions { display: flex; align-items: center; gap: 8px; position: absolute; right: 20px; }
+        .header-actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
         .header-action-btn { padding: 0; width: 40px; height: 40px; border: none; background-color: transparent; color: var(--text-secondary); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s var(--md-animation-standard); }
         .header-action-btn:hover { background-color: var(--history-item-hover-bg); }
         .header-action-btn svg { width: 24px; height: 24px; fill: currentColor; }
@@ -249,7 +283,7 @@
         .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
         .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
         #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; justify-items: center; }
-        .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1; /* JANK FIX 2 */ }
+        .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .dp-grid-wrapper { position: relative; overflow: hidden; height: 264px; }
         .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; justify-items: center; }
         .dp-day { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 0.9em; border: 2px solid transparent; color: var(--text-primary); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
@@ -265,7 +299,9 @@
             body.sidebar-open #sidebar { left: 0; }
             body.sidebar-open #sidebar-overlay { display: block; }
             #sidebar-toggle-button { display: none; }
+            
             #mobile-menu-toggle { display: block; }
+
             #game-container { border-radius: 0; }
             #app-wrapper.sidebar-collapsed #sidebar { width: 260px; padding: 12px; }
             #app-wrapper.sidebar-collapsed .sidebar-header { flex-direction: row; align-items: center; gap: 0; }
@@ -276,7 +312,6 @@
             #app-wrapper.sidebar-collapsed #history-list-container { display: block; }
             header { padding-top: calc(10px + env(safe-area-inset-top)); }
             #input-area { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-            .header-actions { position: absolute; right: 15px; margin-left: 0; }
 
             .date-picker-trigger {
                 padding: 0;
@@ -450,10 +485,11 @@
         const dontShowAgainCheckbox = document.getElementById('dont-show-again-checkbox');
         
         // --- App State & Constants ---
-        const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun ', 'Referer': 'https://xiaoce.fun/guessdisease ', 'Fun-Device': 'web', 'Dnt': '1' };
+        const BASE_HEADERS = { 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Origin': 'https://xiaoce.fun', 'Referer': 'https://xiaoce.fun/guessdisease', 'Fun-Device': 'web', 'Dnt': '1' };
+        
         const GAME_MODES = {
-            disease: { title: '猜病', typeParam: 'guess_disease', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage ', storagePrefix: 'guessDisease_chat_', activeKey: 'activeGuessDiseaseChat', greeting: '你好，医生。', placeholder: '请输入你的提问或诊断…', successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉' },
-            crime: { title: '猜罪', typeParam: 'guess_crime', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage ', storagePrefix: 'guessCrime_chat_', activeKey: 'activeGuessCrimeChat', greeting: '你好，律师。', placeholder: '请输入你的提问或罪名猜测', successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉' }
+            disease: { title: '猜病', typeParam: 'guess_disease', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessDisease/sendMessage', storagePrefix: 'guessDisease_chat_', activeKey: 'activeGuessDiseaseChat', greeting: '你好，医生。', placeholder: '请输入你的提问或诊断…', successMessage: '🎉 恭喜你，诊断正确！游戏胜利！ 🎉' },
+            crime: { title: '猜罪', typeParam: 'guess_crime', apiUrl: 'https://xiaoce.fun/api/v0/quiz/daily/guessCrime/sendMessage', storagePrefix: 'guessCrime_chat_', activeKey: 'activeGuessCrimeChat', greeting: '你好，律师。', placeholder: '请输入你的提问或罪名猜测', successMessage: '🎉 恭喜你，猜罪正确！游戏胜利！ 🎉' }
         };
         let currentGameMode = 'disease';
         let chatHistory = [];
@@ -802,7 +838,14 @@
             setInputState(false, "AI思考中...");
 
             try {
-                const response = await fetch(config.apiUrl, { method: 'POST', headers: { ...BASE_HEADERS, 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}` });
+                const response = await fetch(config.apiUrl, { 
+                    method: 'POST', 
+                    headers: { 
+                        ...BASE_HEADERS, 
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' 
+                    }, 
+                    body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}` 
+                });
                 const data = await response.json();
                 if (!response.ok || !data.success) throw new Error(data.message || `请求失败: ${response.status}`);
                 const d = data.data || {};
@@ -1389,8 +1432,8 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js')
-                        。then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); })
-                        。catch(err => { console.log('ServiceWorker registration failed: ', err); });
+                        .then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); })
+                        .catch(err => { console.log('ServiceWorker registration failed: ', err); });
                 });
             }
             await checkBrowserCompatibility();
