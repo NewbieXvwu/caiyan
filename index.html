@@ -3,12 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>猜盐</title>
     <link rel="icon" href="icons/icon-128x128.png" type="image/png">
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fefbff">
 
+    <!-- 
+      为IE8及以下版本提供迷你样式表，在JS执行前隐藏所有应用组件，防止无样式内容泄漏。
+      此代码块会被IE9+和现代浏览器完全忽略。
+    -->
+    <!--[if lte IE 8]>
+    <style type="text/css">
+        #app-wrapper,
+        #context-menu,
+        #confirm-modal,
+        #info-modal,
+        #error-modal,
+        #browser-warning-modal {
+            display: none;
+        }
+    </style>
+    <![endif]-->
+
+    <!-- 
+      为主样式表添加条件注释，防止IE8及以下版本的CSS解析器因读取现代CSS而崩溃。
+    -->
+    <!--[if gt IE 8]><!-->
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -175,7 +197,7 @@
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay-bg); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s var(--md-animation-standard), visibility 0.2s; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
         .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-dialog { background-color: var(--modal-bg); padding: 24px; border-radius: var(--md-sys-shape-corner-xl); box-shadow: var(--context-menu-shadow); width: 90%; max-width: 400px; transform: scale(0.95); transition: transform 0.2s var(--md-animation-standard); }
+        .modal-dialog { background-color: var(--modal-bg); padding: 24px; border-radius: var(--md-sys-shape-corner-xl); box-shadow: var(--context-menu-shadow); width: 90%; max-width: 420px; transform: scale(0.95); transition: transform 0.2s var(--md-animation-standard); }
         .modal-overlay.show .modal-dialog { transform: scale(1); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .modal-header h2 { margin: 0; font-size: 1.5em; font-weight: 500; color: var(--text-primary); }
@@ -189,9 +211,22 @@
         .modal-footer .confirm-btn { background-color: var(--accent-color); color: var(--modal-confirm-btn-text); }
         #confirm-modal.is-delete .modal-footer .confirm-btn { background-color: var(--md-sys-color-error); color: var(--md-sys-color-on-error); }
         
-        #error-modal .modal-dialog, #browser-warning-modal .modal-dialog { background-color: var(--modal-error-bg); color: var(--modal-error-text); }
-        #error-modal .modal-dialog h2, #browser-warning-modal .modal-dialog h2, #error-modal .modal-dialog p, #browser-warning-modal .modal-dialog p { color: var(--modal-error-text); }
+        #error-modal .modal-dialog { background-color: var(--modal-error-bg); color: var(--modal-error-text); }
+        #error-modal .modal-dialog h2, #error-modal .modal-dialog p { color: var(--modal-error-text); }
         .modal-footer .confirm-btn.error { background-color: var(--modal-error-btn-bg); color: var(--modal-error-btn-text); }
+
+        /* Browser Warning Dialog Styles */
+        #browser-warning-modal .modal-dialog { background-color: var(--modal-error-bg); color: var(--modal-error-text); }
+        #browser-warning-modal .modal-dialog h2, #browser-warning-modal .modal-body > p { color: var(--modal-error-text); }
+        #browser-warning-message { white-space: pre-wrap; text-align: left; }
+        .browser-links-container { margin: 24px 0 16px; padding: 16px; background-color: rgba(0, 0, 0, 0.05); border-radius: var(--md-sys-shape-corner-s); }
+        .browser-links-container > p { text-align: center; color: var(--modal-error-text); margin: 0 0 12px 0; }
+        .browser-links { display: flex; justify-content: space-around; align-items: flex-start; gap: 16px; margin-top: 8px; }
+        .browser-link-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--modal-error-text); border-radius: var(--md-sys-shape-corner-s); padding: 8px; transition: background-color 0.2s; flex: 1; max-width: 100px; }
+        .browser-link-item:hover { background-color: rgba(0, 0, 0, 0.1); }
+        .browser-link-item svg { width: 44px; height: 44px; }
+        .browser-link-item span { margin-top: 8px; font-size: 0.85em; font-weight: 500; }
+        #browser-warning-modal .modal-footer .confirm-btn { background-color: var(--modal-error-btn-bg); color: var(--modal-error-btn-text); }
 
         .visually-hidden {
             position: absolute;
@@ -294,10 +329,10 @@
         .dp-nav-btn { display:flex; align-items:center; justify-content:center; background: none; border: none; width: 40px; height: 40px; cursor: pointer; color: var(--text-primary); font-size: 1.2em; border-radius: 50%; transition: background-color 0.2s var(--md-animation-standard), opacity 0.2s var(--md-animation-standard); touch-action: manipulation; }
         .dp-nav-btn:hover:not(:disabled) { background-color: var(--history-item-hover-bg); }
         .dp-nav-btn.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
-        #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-bottom: 8px; justify-items: center; }
+        #dp-weekdays-container { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 4px; gap: 4px; padding-bottom: 8px; justify-items: center; }
         .dp-weekday { text-align: center; font-size: 0.85em; color: var(--text-secondary); font-weight: 500; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .dp-grid-wrapper { position: relative; overflow: hidden; height: 264px; }
-        .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; justify-items: center; }
+        .dp-grid-container { position: absolute; top: 0; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 4px; gap: 4px; justify-items: center; }
         .dp-day { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 0.9em; border: 2px solid transparent; color: var(--text-primary); transition: background-color 0.2s var(--md-animation-standard), color 0.2s var(--md-animation-standard), border-color 0.2s var(--md-animation-standard); }
         .dp-day.other-month { color: var(--text-secondary); }
         .dp-day.disabled { pointer-events: none; color: var(--md-sys-color-outline); }
@@ -352,6 +387,7 @@
             }
         }
     </style>
+    <!--<![endif]-->
 </head>
 <body>
     <!-- 主应用界面 -->
@@ -430,6 +466,25 @@
             </div>
             <div class="modal-body">
                 <p id="browser-warning-message"></p>
+                
+                <div class="browser-links-container">
+                    <p>为了获得最佳体验，我们推荐您升级或使用以下现代浏览器：</p>
+                    <div class="browser-links">
+                        <a href="https://www.google.cn/chrome/" target="_blank" rel="noopener noreferrer" class="browser-link-item">
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>Google Chrome</title><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/></svg>
+                            <span>Chrome</span>
+                        </a>
+                        <a href="https://www.microsoft.com/edge/download" target="_blank" rel="noopener noreferrer" class="browser-link-item">
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>Microsoft Edge</title><path d="M21.86 17.86q.14 0 .25.12.1.13.1.25t-.11.33l-.32.46-.43.53-.44.5q-.21.25-.38.42l-.22.23q-.58.53-1.34 1.04-.76.51-1.6.91-.86.4-1.74.64t-1.67.24q-.9 0-1.69-.28-.8-.28-1.48-.78-.68-.5-1.22-1.17-.53-.66-.92-1.44-.38-.77-.58-1.6-.2-.83-.2-1.67 0-1 .32-1.96.33-.97.87-1.8.14.95.55 1.77.41.82 1.02 1.5.6.68 1.38 1.21.78.54 1.64.9.86.36 1.77.56.92.2 1.8.2 1.12 0 2.18-.24 1.06-.23 2.06-.72l.2-.1.2-.05zm-15.5-1.27q0 1.1.27 2.15.27 1.06.78 2.03.51.96 1.24 1.77.74.82 1.66 1.4-1.47-.2-2.8-.74-1.33-.55-2.48-1.37-1.15-.83-2.08-1.9-.92-1.07-1.58-2.33T.36 14.94Q0 13.54 0 12.06q0-.81.32-1.49.31-.68.83-1.23.53-.55 1.2-.96.66-.4 1.35-.66.74-.27 1.5-.39.78-.12 1.55-.12.7 0 1.42.1.72.12 1.4.35.68.23 1.32.57.63.35 1.16.83-.35 0-.7.07-.33.07-.65.23v-.02q-.63.28-1.2.74-.57.46-1.05 1.04-.48.58-.87 1.26-.38.67-.65 1.39-.27.71-.42 1.44-.15.72-.15 1.38zM11.96.06q1.7 0 3.33.39 1.63.38 3.07 1.15 1.43.77 2.62 1.93 1.18 1.16 1.98 2.7.49.94.76 1.96.28 1 .28 2.08 0 .89-.23 1.7-.24.8-.69 1.48-.45.68-1.1 1.22-.64.53-1.45.88-.54.24-1.11.36-.58.13-1.16.13-.42 0-.97-.03-.54-.03-1.1-.12-.55-.1-1.05-.28-.5-.19-.84-.5-.12-.09-.23-.24-.1-.16-.1-.33 0-.15.16-.35.16-.2.35-.5.2-.28.36-.68.16-.4.16-.95 0-1.06-.4-1.96-.4-.91-1.06-1.64-.66-.74-1.52-1.28-.86-.55-1.79-.89-.84-.3-1.72-.44-.87-.14-1.76-.14-1.55 0-3.06.45T.94 7.55q.71-1.74 1.81-3.13 1.1-1.38 2.52-2.35Q6.68 1.1 8.37.58q1.7-.52 3.58-.52Z"/></svg>
+                            <span>Edge</span>
+                        </a>
+                        <a href="https://www.mozilla.org/firefox/new/" target="_blank" rel="noopener noreferrer" class="browser-link-item">
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>Firefox Browser</title><path d="M8.824 7.287c.008 0 .004 0 0 0zm-2.8-1.4c.006 0 .003 0 0 0zm16.754 2.161c-.505-1.215-1.53-2.528-2.333-2.943.654 1.283 1.033 2.57 1.177 3.53l.002.02c-1.314-3.278-3.544-4.6-5.366-7.477-.091-.147-.184-.292-.273-.446a3.545 3.545 0 01-.13-.24 2.118 2.118 0 01-.172-.46.03.03 0 00-.027-.03.038.038 0 00-.021 0l-.006.001a.037.037 0 00-.01.005L15.624 0c-2.585 1.515-3.657 4.168-3.932 5.856a6.197 6.197 0 00-2.305.587.297.297 0 00-.147.37c.057.162.24.24.396.17a5.622 5.622 0 012.008-.523l.067-.005a5.847 5.847 0 011.957.222l.095.03a5.816 5.816 0 01.616.228c.08.036.16.073.238.112l.107.055a5.835 5.835 0 01.368.211 5.953 5.953 0 012.034 2.104c-.62-.437-1.733-.868-2.803-.681 4.183 2.09 3.06 9.292-2.737 9.02a5.164 5.164 0 01-1.513-.292 4.42 4.42 0 01-.538-.232c-1.42-.735-2.593-2.121-2.74-3.806 0 0 .537-2 3.845-2 .357 0 1.38-.998 1.398-1.287-.005-.095-2.029-.9-2.817-1.677-.422-.416-.622-.616-.8-.767a3.47 3.47 0 00-.301-.227 5.388 5.388 0 01-.032-2.842c-1.195.544-2.124 1.403-2.8 2.163h-.006c-.46-.584-.428-2.51-.402-2.913-.006-.025-.343.176-.389.206-.406.29-.787.616-1.136.974-.397.403-.76.839-1.085 1.303a9.816 9.816 0 00-1.562 3.52c-.003.013-.11.487-.19 1.073-.013.09-.026.181-.037.272a7.8 7.8 0 00-.069.667l-.002.034-.023.387-.001.06C.386 18.795 5.593 24 12.016 24c5.752 0 10.527-4.176 11.463-9.661.02-.149.035-.298.052-.448.232-1.994-.025-4.09-.753-5.844z"/></svg>
+                            <span>Firefox</span>
+                        </a>
+                    </div>
+                </div>
+
                 <div class="checkbox-wrapper">
                     <input class="visually-hidden" type="checkbox" id="dont-show-again-checkbox">
                     <label class="checkbox-container" for="dont-show-again-checkbox">
@@ -443,20 +498,24 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="confirm-btn error" id="browser-warning-ok-btn">好的</button>
+                <button class="confirm-btn" id="browser-warning-ok-btn">好的</button>
             </div>
         </div>
     </div>
 
-    <!-- 为旧版浏览器准备的静态后备页面 (默认隐藏) -->
     <div id="unsupported-browser-message" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background-color: #f4f5f7; font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft Yahei', sans-serif; overflow-y: auto;">
         <div style="width: 90%; max-width: 560px; margin: 80px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 32px; box-sizing: border-box; text-align: center;">
+            
+            <!-- Icon container with conditional comments to hide from IE8 and below -->
+            <!--[if gt IE 8]><!-->
             <div style="width: 64px; height: 64px; margin: 0 auto 20px auto; background-color: #fce8e6; border-radius: 50%;">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 8.25V12M12 15.75H12.01M21.75 12C21.75 17.3848 17.3848 21.75 12 21.75C6.61522 21.75 2.25 17.3848 2.25 12C2.25 6.61522 6.61522 2.25 12 2.25C17.3848 2.25 21.75 6.61522 21.75 12Z" stroke="#d93025" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h2 style="font-size: 26px; color: #202124; margin: 0 0 12px 0; font-weight: 500;">您的浏览器版本需要更新</h2>
+            <!--<![endif]-->
+
+            <h2 style="font-size: 26px; color: #202124; margin: 0 0 12px 0; font-weight: 500;">您的浏览器需要更新</h2>
             <p style="font-size: 16px; line-height: 1.7; color: #5f6368; margin: 0 0 30px 0;">
                 当前浏览器过旧，无法正常运行此应用。我们建议您升级到最新版本的现代浏览器，以享受更快的速度、更佳的视觉体验和更高的安全性。
             </p>
@@ -548,13 +607,20 @@
             let dpAnimationAbortController = null;
             
             // --- 日期和格式化工具 ---
-            function getLocalISOString(date = new Date()) {
-                const d = date;
-                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+            function padZero(num) {
+                var s = String(num);
+                return s.length < 2 ? '0' + s : s;
             }
 
-            function getFormattedDate(date = new Date()) {
-                return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+            function getLocalISOString(date) {
+                date = date || new Date();
+                return date.getFullYear() + '-' + padZero(date.getMonth() + 1) + '-' + padZero(date.getDate()) +
+                       'T' + padZero(date.getHours()) + ':' + padZero(date.getMinutes()) + ':' + padZero(date.getSeconds());
+            }
+
+            function getFormattedDate(date) {
+                date = date || new Date();
+                return String(date.getFullYear()) + padZero(date.getMonth() + 1) + padZero(date.getDate());
             }
             
             async function fetchActiveDates() {
@@ -563,7 +629,7 @@
                     return activeDatesCache[currentGameMode];
                 }
                 try {
-                    const response = await fetch(`https://xiaoce.fun/api/v0/quiz/daily/general/fetchActive?type=${config.typeParam}`, { method: 'GET', headers: BASE_HEADERS });
+                    const response = await fetch('https://xiaoce.fun/api/v0/quiz/daily/general/fetchActive?type=' + config.typeParam, { method: 'GET', headers: BASE_HEADERS });
                     if (!response.ok) throw new Error('API request failed');
                     const result = await response.json();
                     if (result.success && Array.isArray(result.data)) {
@@ -635,7 +701,7 @@
             }
 
             function updateNavButtonStates(activeDatesSet) {
-                const sortedDates = [...activeDatesSet].sort();
+                const sortedDates = Array.from(activeDatesSet).sort();
                 if (sortedDates.length === 0) {
                     dpPrevMonthBtn.disabled = true;
                     dpPrevMonthBtn.classList.add('disabled');
@@ -662,53 +728,71 @@
             function transitionToMonth(direction, activeDatesSet) {
                 if (direction === 'prev' && dpPrevMonthBtn.disabled) return;
                 if (direction === 'next' && dpNextMonthBtn.disabled) return;
-
-                if (dpAnimationAbortController) {
-                    dpAnimationAbortController.abort();
+            
+                if (typeof AbortController !== 'undefined') {
+                    if (dpAnimationAbortController) {
+                        dpAnimationAbortController.abort();
+                    }
+                    dpAnimationAbortController = new AbortController();
+                } else {
+                    dpAnimationAbortController = null;
                 }
-                dpAnimationAbortController = new AbortController();
-                const signal = dpAnimationAbortController.signal;
                 
                 const existingGrids = dpGridWrapper.querySelectorAll('.dp-grid-container');
                 let oldGrid = existingGrids.length > 0 ? existingGrids[existingGrids.length - 1] : null;
                 
                 if (existingGrids.length > 1) {
-                    existingGrids[0].remove();
+                    for(let i = 0; i < existingGrids.length - 1; i++) {
+                        existingGrids[i].remove();
+                    }
                 }
-
+            
                 dpDisplayDate.setMonth(dpDisplayDate.getMonth() + (direction === 'next' ? 1 : -1));
                 const newGrid = createCalendarGrid(dpDisplayDate, activeDatesSet);
                 
                 newGrid.style.transition = 'none';
-                newGrid.style.transform = `translateX(${direction === 'next' ? '100%' : '-100%'})`;
+                newGrid.style.transform = 'translateX(' + (direction === 'next' ? '100%' : '-100%') + ')';
                 dpGridWrapper.appendChild(newGrid);
                 
-                newGrid.offsetHeight; 
-
-                const transitionStyle = 'transform 0.4s var(--md-animation-standard)';
-                newGrid.style.transition = transitionStyle;
-                if (oldGrid) oldGrid.style.transition = transitionStyle;
-
-                if (oldGrid) {
-                    oldGrid.style.transform = `translateX(${direction === 'next' ? '-100%' : '100%'})`;
-                }
-                newGrid.style.transform = 'translateX(0)';
-
-                newGrid.addEventListener('transitionend', () => {
-                    if (oldGrid) oldGrid.remove();
-                }, { signal });
-
-                dpMonthYear.textContent = `${dpDisplayDate.getFullYear()}年 ${dpDisplayDate.getMonth() + 1}月`;
+                requestAnimationFrame(function() {
+                    const transitionStyle = 'transform 0.4s var(--md-animation-standard)';
+                    newGrid.style.transition = transitionStyle;
+                    if (oldGrid) oldGrid.style.transition = transitionStyle;
+            
+                    if (oldGrid) {
+                        oldGrid.style.transform = 'translateX(' + (direction === 'next' ? '-100%' : '100%') + ')';
+                    }
+                    newGrid.style.transform = 'translateX(0)';
+                });
+            
+                const listenerOptions = dpAnimationAbortController ? { signal: dpAnimationAbortController.signal } : {};
+            
+                const onTransitionEnd = function() {
+                    if (oldGrid) {
+                        oldGrid.remove();
+                    }
+                    if (!dpAnimationAbortController) {
+                        newGrid.removeEventListener('transitionend', onTransitionEnd);
+                    }
+                };
+            
+                newGrid.addEventListener('transitionend', onTransitionEnd, listenerOptions);
+            
+                dpMonthYear.textContent = dpDisplayDate.getFullYear() + '年 ' + (dpDisplayDate.getMonth() + 1) + '月';
                 updateNavButtonStates(activeDatesSet);
             }
             
             // --- 核心功能函数 ---
             function scrollToBottom() {
-                chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+                if (chatWindow && typeof chatWindow.scrollTo === 'function') {
+                    chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+                } else if (chatWindow) {
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }
             }
             function renderMessage({ text, sender, type }) {
                 const messageDiv = document.createElement('div');
-                messageDiv.className = sender === 'system' ? `system-message ${type}` : `message ${sender}-message`;
+                messageDiv.className = sender === 'system' ? 'system-message ' + type : 'message ' + sender + '-message';
                 if (sender !== 'system') {
                     const bubble = document.createElement('div');
                     bubble.className = 'message-bubble';
@@ -720,7 +804,7 @@
                 chatWindow.appendChild(messageDiv);
                 scrollToBottom();
             }
-            function setInputState(enabled, placeholderText = "") {
+            function setInputState(enabled, placeholderText) {
                 userInput.disabled = !enabled;
                 sendButton.disabled = !enabled;
                 if (placeholderText) {
@@ -728,12 +812,17 @@
                 }
             }
             
-            async function saveHistory(firstUserMessage = null) {
+            async function saveHistory(firstUserMessage) {
                 if (!currentChatKey) return;
                 const config = GAME_MODES[currentGameMode];
                 try {
                     const existingData = JSON.parse(localStorage.getItem(currentChatKey) || '{}');
-                    const dataToSave = { ...existingData, messages: chatHistory, chatId: chatId, isGameActive: isGameActive, victoryRank: currentVictoryRank };
+                    const dataToSave = Object.assign({}, existingData, { 
+                        messages: chatHistory, 
+                        chatId: chatId, 
+                        isGameActive: isGameActive, 
+                        victoryRank: currentVictoryRank 
+                    });
                     if (firstUserMessage) {
                         dataToSave.title = firstUserMessage.length > 28 ? firstUserMessage.substring(0, 28) + '...' : firstUserMessage;
                     }
@@ -781,7 +870,7 @@
                 }
             }
             
-            async function startNewChat(selectedDate = null) {
+            async function startNewChat(selectedDate) {
                 const config = GAME_MODES[currentGameMode];
                 currentChatKey = null;
                 chatId = "";
@@ -822,20 +911,20 @@
                     const isNewChat = currentChatKey === null;
                     if (dailySuccessCount !== null) {
                         const dayText = isNewChat && !targetDate ? '今日' : '该日';
-                        const successText = ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                        const successText = ' ' + dayText + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
                         if (!isMobile) {
                             placeholder += successText;
                         }
                     }
                 } else {
                     if (currentVictoryRank !== null) {
-                        placeholder = `您是该日第 ${currentVictoryRank.toLocaleString()} 位猜出谜底的人！🎉`;
+                        placeholder = '您是该日第 ' + currentVictoryRank.toLocaleString() + ' 位猜出谜底的人！🎉';
                     } else {
                         placeholder = "恭喜你，已猜出谜底！请开启新对话。";
                     }
                 }
                 setInputState(isGameActive, placeholder);
-                document.querySelectorAll('.history-item').forEach(item => {
+                document.querySelectorAll('.history-item').forEach(function(item) {
                     item.classList.toggle('active', item.dataset.key === currentChatKey);
                 });
                 if (!isMobile) {
@@ -843,10 +932,10 @@
                 }
             }
             
-            async function fetchSuccessCount(puzzleDateStr = null) {
+            async function fetchSuccessCount(puzzleDateStr) {
                 const config = GAME_MODES[currentGameMode];
                 let dateForApi = puzzleDateStr ? puzzleDateStr.replace(/-/g, '') : getFormattedDate();
-                const url = `https://xiaoce.fun/api/v0/quiz/daily/getStatus?type=${config.typeParam}&date=${dateForApi}`;
+                const url = 'https://xiaoce.fun/api/v0/quiz/daily/getStatus?type=' + config.typeParam + '&date=' + dateForApi;
                 try {
                     const response = await fetch(url, { method: 'GET', headers: BASE_HEADERS });
                     if (!response.ok) return null;
@@ -881,14 +970,13 @@
                 try {
                     const response = await fetch(config.apiUrl, { 
                         method: 'POST', 
-                        headers: { 
-                            ...BASE_HEADERS, 
-                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' 
-                        }, 
-                        body: `date=${puzzleDateForApi}&chatId=${chatId}&message=${encodeURIComponent(messageText)}` 
+                        headers: Object.assign({}, BASE_HEADERS, {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                        }), 
+                        body: 'date=' + puzzleDateForApi + '&chatId=' + chatId + '&message=' + encodeURIComponent(messageText) 
                     });
                     const data = await response.json();
-                    if (!response.ok || !data.success) throw new Error(data.message || `请求失败: ${response.status}`);
+                    if (!response.ok || !data.success) throw new Error(data.message || '请求失败: ' + response.status);
                     const d = data.data || {};
                     if (d.chatId) chatId = d.chatId;
                     const aiMessage = { text: d.answer || "我不知道该怎么回答。", sender: 'ai' };
@@ -906,7 +994,7 @@
                     console.error("发送消息失败:", error);
                     chatHistory.pop();
                     if (chatWindow.lastChild) chatWindow.lastChild.remove();
-                    const errorMsg = { text: `错误: 消息发送失败，请检查网络并重试。`, sender: 'system', type: 'error' };
+                    const errorMsg = { text: '错误: 消息发送失败，请检查网络并重试。', sender: 'system', type: 'error' };
                     chatHistory.push(errorMsg);
                     renderMessage(errorMsg);
                     userInput.value = messageText;
@@ -921,22 +1009,39 @@
                 if (localStorage.getItem('suppressBrowserWarning') === 'true' || sessionStorage.getItem('browserVersionWarningShown') === 'true') {
                     return;
                 }
-                // 此函数现在用于显示“版本较低”而非“无法运行”的警告
-                // 通过 `isFeatureSupported` 函数来决定是否显示
-                // 这里我们假设如果主脚本能运行，但某些特性可能缺失
-                const isFeatureSupported = () => {
-                    const testEl = document.createElement('div');
-                    testEl.style.display = 'flex';
-                    testEl.style.gap = '1px';
-                    return testEl.style.gap === '1px' && ('backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style);
-                };
-                if (!isFeatureSupported()) {
+                
+                const warningMessages = [];
+                const testEl = document.createElement('div');
+                
+                testEl.style.display = 'flex';
+                testEl.style.gap = '1px';
+                if (testEl.style.gap !== '1px') {
+                    warningMessages.push("部分界面元素的间距可能显示不均匀。");
+                }
+
+                if (!('backdropFilter' in testEl.style || 'webkitBackdropFilter' in testEl.style)) {
+                    warningMessages.push("弹窗背景的模糊效果将无法显示。");
+                }
+                
+                if (typeof CSS === 'undefined' || !CSS.supports || !CSS.supports('color', 'color-mix(in srgb, red, blue)')) {
+                    warningMessages.push("按钮等元素的悬停颜色效果会略有不同。");
+                }
+
+                if (typeof AbortController === 'undefined') {
+                    warningMessages.push("在进行快速操作时，动画过渡可能不够流畅。");
+                }
+
+                if (warningMessages.length > 0) {
+                    const baseMessage = '我们检测到您当前的浏览器版本较低，继续使用可能会遇到以下情况：';
+                    const fullMessage = baseMessage + '\n\n• ' + warningMessages.join('\n• ');
+                    
                     await showBrowserWarningDialog({
                         title: '浏览器兼容性提示',
-                        message: '您当前的浏览器版本过低，部分视觉效果和布局可能无法完美显示。建议升级到最新版本的现代浏览器（如Chrome, Firefox, Edge）以获得最佳体验。'
+                        message: fullMessage
                     });
                 }
             }
+
             function getRelativeDateGroup(dateStr) {
                 const today = new Date();
                 const date = new Date(dateStr);
@@ -946,14 +1051,14 @@
                 if (diffDays === 0) return "今天";
                 if (diffDays === 1) return "昨天";
                 if (diffDays < 7) return "7天内";
-                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                return date.getFullYear() + '-' + padZero(date.getMonth() + 1);
             }
             function populateSidebar() {
                 const config = GAME_MODES[currentGameMode];
                 const prefix = config.storagePrefix;
-                const chats = Object.keys(localStorage).filter(k => k.startsWith(prefix)).map(key => ({ key, data: JSON.parse(localStorage.getItem(key) || '{}') })).filter(chat => chat.data && chat.data.title).sort((a, b) => b.key.localeCompare(a.key));
+                const chats = Object.keys(localStorage).filter(k => k.startsWith(prefix)).map(key => ({ key: key, data: JSON.parse(localStorage.getItem(key) || '{}') })).filter(chat => chat.data && chat.data.title).sort((a, b) => b.key.localeCompare(a.key));
                 const groups = {};
-                chats.forEach(chat => {
+                chats.forEach(function (chat) {
                     const dateStr = chat.key.substring(prefix.length, prefix.length + 10);
                     const groupName = getRelativeDateGroup(dateStr);
                     if (!groups[groupName]) {
@@ -971,16 +1076,16 @@
                     if (bIndex !== -1) return 1;
                     return b.localeCompare(a);
                 });
-                sortedGroupNames.forEach(groupName => {
+                sortedGroupNames.forEach(function (groupName) {
                     const header = document.createElement('div');
                     header.className = 'history-group-header';
                     header.textContent = groupName;
                     historyListContainer.appendChild(header);
-                    groups[groupName].forEach(({ key, data }) => {
+                    groups[groupName].forEach(function ({ key, data }) {
                         const li = document.createElement('div');
                         li.className = 'history-item';
                         li.dataset.key = key;
-                        li.innerHTML = `<span>${data.title}</span>`;
+                        li.innerHTML = '<span>' + data.title + '</span>';
                         li.title = data.title;
                         if (key === currentChatKey) li.classList.add('active');
                         li.addEventListener('click', () => loadChat(key));
@@ -1041,7 +1146,9 @@
                 input.addEventListener('keydown', onKeydown);
             }
 
-            function showBrowserWarningDialog({ title = '提示', message = '' }) {
+            function showBrowserWarningDialog({ title, message }) {
+                title = title || '提示';
+                message = message || '';
                 return new Promise(resolve => {
                     browserWarningTitle.textContent = title;
                     browserWarningMessage.textContent = message;
@@ -1069,7 +1176,9 @@
                 });
             }
 
-            function showErrorDialog({ title = '错误', message = '' }) {
+            function showErrorDialog({ title, message }) {
+                title = title || '错误';
+                message = message || '';
                 return new Promise(resolve => {
                     errorModalTitle.textContent = title;
                     errorModalMessage.textContent = message;
@@ -1091,7 +1200,9 @@
                     resolver = resolve;
                 });
             }
-            function showInfoDialog({ title = '提示', message = '' }) {
+            function showInfoDialog({ title, message }) {
+                title = title || '提示';
+                message = message || '';
                 return new Promise(resolve => {
                     infoModalTitle.textContent = title;
                     infoModalMessage.textContent = message;
@@ -1113,12 +1224,17 @@
                     resolver = resolve;
                 });
             }
-            function showConfirmDialog({ title = '永久删除对话', message = '删除后，该对话将不可恢复。确认删除吗？', confirmText = '删除', confirmClass = '' }) {
+            function showConfirmDialog({ title, message, confirmText, confirmClass }) {
+                title = title || '永久删除对话';
+                message = message || '删除后，该对话将不可恢复。确认删除吗？';
+                confirmText = confirmText || '删除';
+                confirmClass = confirmClass || '';
+
                 return new Promise(resolve => {
                     confirmModalTitle.textContent = title;
                     confirmModalMessage.textContent = message;
                     confirmModalConfirmBtn.textContent = confirmText;
-                    confirmModalConfirmBtn.className = `confirm-btn ${confirmClass}`;
+                    confirmModalConfirmBtn.className = 'confirm-btn ' + confirmClass;
                     confirmModal.classList.toggle('is-delete', confirmClass === 'delete');
                     let resolver = null;
                     const show = () => confirmModal.classList.add('show');
@@ -1170,7 +1286,7 @@
                 const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 arrow.setAttribute('class', 'select-arrow');
                 arrow.setAttribute('viewBox', '0 0 20 20');
-                arrow.innerHTML = `<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />`;
+                arrow.innerHTML = '<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />';
                 selected.appendChild(arrow);
                 
                 const items = document.createElement('ul');
@@ -1216,7 +1332,7 @@
             async function handleGameModeChange(newMode) {
                 currentGameMode = newMode;
                 localStorage.setItem('lastGameMode', currentGameMode);
-                document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
+                document.title = '猜盐 - ' + GAME_MODES[currentGameMode].title;
                 activeDatesCache = {};
                 createCustomDropdown();
                 await startNewChat();
@@ -1249,7 +1365,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `caiyan_backup_${getFormattedDate()}.json`;
+                a.download = 'caiyan_backup_' + getFormattedDate() + '.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1342,7 +1458,7 @@
                     if (isGameActive && dailySuccessCount !== null) {
                         const isNewChat = currentChatKey === null;
                         const dayText = isNewChat && !targetDate ? '今日' : '该日';
-                        userInput.placeholder = `${GAME_MODES[currentGameMode].placeholder} ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                        userInput.placeholder = GAME_MODES[currentGameMode].placeholder + ' ' + dayText + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
                     }
                 });
                 userInput.addEventListener('blur', () => {
@@ -1351,7 +1467,7 @@
                         if (!isMobile && dailySuccessCount !== null) {
                             const isNewChat = currentChatKey === null;
                             const dayText = isNewChat && !targetDate ? '今日' : '该日';
-                            placeholder += ` ${dayText}已有 ${dailySuccessCount.toLocaleString()} 人猜出谜底`;
+                            placeholder += ' ' + dayText + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
                         }
                         userInput.placeholder = placeholder;
                     }
@@ -1370,8 +1486,8 @@
                         const finalX = (x + menuWidth > viewWidth) ? viewWidth - menuWidth - 5 : x;
                         const finalY = (y + menuHeight > viewHeight) ? viewHeight - menuHeight - 5 : y;
 
-                        contextMenu.style.top = `${finalY}px`;
-                        contextMenu.style.left = `${finalX}px`;
+                        contextMenu.style.top = finalY + 'px';
+                        contextMenu.style.left = finalX + 'px';
                         contextMenu.classList.add('show');
                     });
                 };
@@ -1449,7 +1565,7 @@
                     dpDisplayDate = dpSelectedDate ? new Date(dpSelectedDate.getFullYear(), dpSelectedDate.getMonth(), 1) : new Date();
                     dpGridWrapper.innerHTML = '';
                     dpGridWrapper.appendChild(createCalendarGrid(dpDisplayDate, activeDatesSet));
-                    dpMonthYear.textContent = `${dpDisplayDate.getFullYear()}年 ${dpDisplayDate.getMonth() + 1}月`;
+                    dpMonthYear.textContent = dpDisplayDate.getFullYear() + '年 ' + (dpDisplayDate.getMonth() + 1) + '月';
                     updateNavButtonStates(activeDatesSet);
                     datePickerPopover.classList.add('show');
                 });
@@ -1465,7 +1581,7 @@
                         const day = parseInt(dateStr.substring(6, 8), 10);
                         dpSelectedDate = new Date(year, month, day);
                         datePickerPopover.classList.remove('show');
-                        startNewChat(`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+                        startNewChat(year + '-' + padZero(month + 1) + '-' + padZero(day));
                     }
                 });
             }
@@ -1489,7 +1605,7 @@
                 if (lastMode && GAME_MODES[lastMode]) {
                     currentGameMode = lastMode;
                 }
-                document.title = `猜盐 - ${GAME_MODES[currentGameMode].title}`;
+                document.title = '猜盐 - ' + GAME_MODES[currentGameMode].title;
                 
                 const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
                 dpWeekdaysContainer.innerHTML = '';
@@ -1524,39 +1640,40 @@
                 
                 populateSidebar();
             }
-
-            // 检查DOM是否已经加载完成
+            
             if (document.readyState === 'loading') {
-                // 如果还在加载，则等待DOMContentLoaded事件
                 document.addEventListener('DOMContentLoaded', initializeApp);
             } else {
-                // 如果已经加载完毕（interactive 或 complete），则立即执行初始化
                 initializeApp();
             }
-    })();
+        })();
     </script>
 
-    <!-- 守卫脚本，使用最安全的 ES5 语法，必须放在最后 -->
     <script>
         (function () {
             'use strict';
 
-            // 功能：检测浏览器是否支持基础的现代 JS 语法。
-            // 尝试构造一个包含现代语法的函数。
-            // 在旧版浏览器中，这会抛出语法错误，被 catch 块捕获。
             function isModernJsSupported() {
+                // 1. Syntax check
                 try {
-                    // 检查最核心的 ES6+ 语法: const, 箭头函数, async/await 等。
                     new Function('"use strict"; const test = async () => {};');
-                    return true;
                 } catch (e) {
                     return false;
                 }
+                
+                // 2. Critical API check
+                if (typeof window.fetch !== 'function' ||
+                    typeof window.Promise !== 'function' ||
+                    typeof window.localStorage === 'undefined' ||
+                    typeof window.Set !== 'function' ||
+                    typeof Object.assign !== 'function') {
+                    return false;
+                }
+                
+                return true;
             }
 
-            // 根据检测结果执行不同操作
             if (isModernJsSupported()) {
-                // 是现代浏览器：动态执行主应用脚本
                 var scriptTemplate = document.getElementById('main-app-script');
                 if (scriptTemplate) {
                     var executableScript = document.createElement('script');
@@ -1564,7 +1681,6 @@
                     document.body.appendChild(executableScript);
                 }
             } else {
-                // 是旧版浏览器：隐藏主应用，显示静态后备页面
                 var app = document.getElementById('app-wrapper');
                 if (app) {
                     app.style.display = 'none';
