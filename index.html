@@ -785,6 +785,29 @@
 
                 const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
 
+                if (!String.prototype.padStart) {
+                    String.prototype.padStart = function padStart(targetLength, padString) {
+                        targetLength = targetLength >> 0; 
+                        
+                        var str = String(this);
+
+                        if (str.length >= targetLength) {
+                            return str;
+                        }
+
+                        padString = String(typeof padString !== 'undefined' ? padString : ' ');
+                        if (padString.length === 0) {
+                            return str;
+                        }
+
+                        var fillLen = targetLength - str.length;
+                        
+                        var padding = padString.repeat(Math.ceil(fillLen / padString.length));
+                        
+                        return padding.slice(0, fillLen) + str;
+                    };
+                }
+
                 function initWeekdays() {
                     const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
                     weekdaysContainer.innerHTML = '';
