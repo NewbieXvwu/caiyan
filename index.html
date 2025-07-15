@@ -886,7 +886,8 @@
                 if ('userAgentData' in navigator && typeof navigator.userAgentData === 'object') {
                     isMobile = navigator.userAgentData.mobile;
                 }
-                const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints != 0);
+                const maxTouchPoints = navigator.maxTouchPoints || navigator.msMaxTouchPoints || 0;
+                const hasTouch = 'ontouchstart' in window || maxTouchPoints > 0;
                 if (!hasTouch) {
                     // 如果设备连触摸都不支持，那100%是桌面设备。
                     isMobile = false;
