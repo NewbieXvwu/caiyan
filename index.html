@@ -2209,15 +2209,6 @@
                 } catch (e) {
                     console.error("Clarity script initialization failed, but continuing with main app.", e);
                 }
-                try {
-                    var goatCounterScript = document.createElement('script');
-                    goatCounterScript.src = '//gc.zgo.at/count.js';
-                    goatCounterScript.setAttribute('data-goatcounter', 'https://newbiexvwu.goatcounter.com/count');
-                    goatCounterScript.async = true;
-                    document.head.appendChild(goatCounterScript);
-                } catch (e) {
-                    console.error("GoatCounter script initialization failed, but continuing with main app.", e);
-                }
                 var scriptTemplate = document.getElementById('main-app-script');
                 if (scriptTemplate) {
                     var executableScript = document.createElement('script');
