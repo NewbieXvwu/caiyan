@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caiyan-cache-v7';
+const CACHE_NAME = 'caiyan-cache-v8';
 
 const urlsToCache = [
   './', // index.html
@@ -11,7 +11,7 @@ const urlsToCache = [
   './icons/icon-512x512-maskable.webp'
 ];
 
-self。addEventListener('install', event => {
+self。addEventListener('install'， event => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -22,7 +22,7 @@ self。addEventListener('install', event => {
   );
 });
 
-self。addEventListener('activate', event => {
+self。addEventListener('activate'， event => {
   const cacheWhitelist = [CACHE_NAME];
 
   event.waitUntil(
@@ -42,7 +42,7 @@ self。addEventListener('activate', event => {
   );
 });
 
-self。addEventListener('fetch', event => {
+self。addEventListener('fetch'， event => {
   if (event.request.method !== 'GET') {
     return;
   }
@@ -51,7 +51,8 @@ self。addEventListener('fetch', event => {
 
   const analyticsDomains = [
     'clarity.ms',
-    'bing.com'
+    'bing.com',
+    'simpleanalyticscdn.com'
   ];
 
   if (analyticsDomains.some(domain => requestUrl.hostname.endsWith(domain))) {
