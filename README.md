@@ -24,8 +24,8 @@
     </td>
     <td align="center" width="35%">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://youke1.picui.cn/s1/2025/07/17/6877d1f80019a.png" style="width:100%;">
-        <img alt="手机截图" src="https://youke1.picui.cn/s1/2025/07/17/6877d1f871e23.png" style="width:100%;">
+        <source media="(prefers-color-scheme: dark)" srcset="https://youke1.picui.cn/s1/2025/07/17/6877d1f80019a.png" style="width:82%;">
+        <img alt="手机截图" src="https://youke1.picui.cn/s1/2025/07/17/6877d1f871e23.png" style="width:82%;">
       </picture>
     </td>
   </tr>
