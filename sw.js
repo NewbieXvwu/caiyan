@@ -11,18 +11,18 @@ const urlsToCache = [
   './icons/icon-512x512-maskable.webp'
 ];
 
-self.addEventListener('install', event => {
+self。addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
+      。then(cache => {
         console.log(`[SW] Opened cache: ${CACHE_NAME}`);
         return cache.addAll(urlsToCache);
       })
   );
 });
 
-self.addEventListener('activate', event => {
+self。addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
 
   event.waitUntil(
@@ -42,7 +42,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-self.addEventListener('fetch', event => {
+self。addEventListener('fetch', event => {
   if (event.request.method !== 'GET') {
     return;
   }
@@ -51,9 +51,7 @@ self.addEventListener('fetch', event => {
 
   const analyticsDomains = [
     'clarity.ms',
-    'bing.com',
-    'goatcounter.com',
-    'zgo.at'
+    'bing.com'
   ];
 
   if (analyticsDomains.some(domain => requestUrl.hostname.endsWith(domain))) {
