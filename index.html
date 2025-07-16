@@ -2202,6 +2202,15 @@
                 } catch (e) {
                     console.error("Clarity script initialization failed, but continuing with main app.", e);
                 }
+                try {
+					var simpleAnalyticsScript = document.createElement('script');
+					simpleAnalyticsScript.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
+					simpleAnalyticsScript.setAttribute('data-collect-dnt', 'true');
+					simpleAnalyticsScript.async = true;
+					document.head.appendChild(simpleAnalyticsScript);
+				} catch (e) {
+					console.error("Simple Analytics script initialization failed.", e);
+				}
                 var scriptTemplate = document.getElementById('main-app-script');
                 if (scriptTemplate) {
                     var executableScript = document.createElement('script');
