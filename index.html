@@ -2073,14 +2073,7 @@
                     }
                     
                     if (datePickerPopover.classList.contains('show') && !datePickerPopover.contains(e.target) && !e.target.closest('#daily-puzzle-button')) {
-                         if (datePickerDragged) {
-                             // 如果刚刚完成了一次拖拽，重置标志位但不要关闭弹窗
-                             // 下一次在外部的点击将可以正常关闭弹窗
-                             datePickerDragged = false;
-                         } else {
-                             // 否则，正常关闭弹窗
-                             datePickerPopover.classList.remove('show');
-                         }
+                        datePickerPopover.classList.remove('show');
                     }
                 });
                 renameOption.addEventListener('click', (e) => {
