@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caiyan-cache-v6';
+const CACHE_NAME = 'caiyan-cache-v7';
 
 const urlsToCache = [
   './', // index.html
@@ -57,6 +57,11 @@ self.addEventListener('fetch', event => {
   }
 
   const requestUrl = new URL(event.request.url);
+
+  if (requestUrl.hostname.endsWith('clarity.ms') || requestUrl.hostname.endsWith('bing.com')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   // 策略1: API 请求，总是从网络获取，保证数据实时性。
   if (requestUrl.href.startsWith('https://xiaoce.fun/api/')) {
