@@ -8,7 +8,6 @@
 [![GitHub stars](https://img.shields.io/github/stars/NewbieXvwu/caiyan?style=flat&logo=github&color=FFD60A)](https://github.com/NewbieXvwu/caiyan)
 [![GitHub license](https://img.shields.io/github/license/NewbieXvwu/caiyan?style=flat&color=00D1FF)](./LICENSE)
 [![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fcaiyan.pages.dev&label=CF%20Pages&style=flat&logo=cloudflarepages&logoColor=f38020&color=f38020)](https://caiyan.pages.dev)
-[![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fnewbiexvwu.github.io%2Fcaiyan&label=GitHub%20Pages&logo=github)](https://newbiexvwu.github.io/caiyan)
 [![Netlify](https://api.netlify.com/api/v1/badges/b7246c76-e1f6-42f7-a388-191f2c2a154c/deploy-status)](https://caiyan.netlify.app)
 [![Vercel](https://img.shields.io/website?url=https%3A%2F%2Fcaiyan.vercel.app&logo=vercel&label=Vercel&color=00E5A8)](https://caiyan.vercel.app)
 
@@ -37,11 +36,9 @@
 ## 🧭 在线体验  
 | 节点 | 地址 | 备注 | 国内访问速度 |
 |---|---|---|---|
-| 🏠 主站 | [https://caiyan.rth2.xyz](https://caiyan.rth2.xyz) | 热铁盒网页托管 | ⭐⭐⭐⭐⭐ |
 | 🔀 分流 1 | [https://caiyan.pages.dev](https://caiyan.pages.dev) | Cloudflare Pages | ⭐⭐⭐⭐ |
-| 🔀 分流 2 | [https://newbiexvwu.github.io/caiyan](https://newbiexvwu.github.io/caiyan) | GitHub Pages | ⭐⭐⭐ |
-| 🔀 分流 3 | [https://caiyan.netlify.app](https://caiyan.netlify.app) | Netlify | ⭐⭐⭐ |
-| 🔀 分流 4 | [https://caiyan.vercel.app](https://caiyan.vercel.app) | Vercel | ❌ |
+| 🔀 分流 2 | [https://caiyan.netlify.app](https://caiyan.netlify.app) | Netlify | ⭐⭐⭐ |
+| 🔀 分流 3 | [https://caiyan.vercel.app](https://caiyan.vercel.app) | Vercel | ❌ |
 
 > 注：各节点间用户数据不互通，可用导入/导出功能实现迁移。
 
@@ -56,18 +53,7 @@
   - 🩺 猜病 
   - ⚖️ 猜罪
 - 📱 **响应式布局**：手机、平板、桌面均完美适配  
-- 🪶 **零后端**：纯 HTML + CSS + JS，可部署到任意静态托管  
-
----
-
-## 🛠️ 本地开发与构建
-```bash
-# 克隆仓库
-git clone https://github.com/NewbieXvwu/caiyan.git
-cd caiyan
-
-python -m http.server
-```
+- 🪶 **静态网页**：纯 HTML + CSS + JS，可部署到任意静态托管（需要托管支持反代以提供登录功能）
 
 ---
 
