@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "https://xiaoce.fun/api/:splat"
+  status = 200
+  force = true
