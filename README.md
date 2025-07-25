@@ -36,8 +36,8 @@
 ## 🧭 在线体验  
 | 节点 | 地址 | 备注 | 国内访问速度 |
 |---|---|---|---|
-| 🔀 分流 1 | [https://caiyan.pages.dev](https://caiyan.pages.dev) | Cloudflare Pages | ⭐⭐⭐⭐ |
-| 🔀 分流 2 | [https://caiyan.netlify.app](https://caiyan.netlify.app) | Netlify | ⭐⭐⭐ |
+| 🔀 分流 1 | [https://caiyan.netlify.app](https://caiyan.netlify.app) | Netlify | ⭐⭐⭐⭐ |
+| 🔀 分流 2 | [https://caiyan.pages.dev](https://caiyan.pages.dev) | Cloudflare Pages | ⭐⭐⭐ |
 | 🔀 分流 3 | [https://caiyan.vercel.app](https://caiyan.vercel.app) | Vercel | ❌ |
 
 > 注：各节点间用户数据不互通，可用导入/导出功能实现迁移。
