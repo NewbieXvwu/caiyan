@@ -1246,17 +1246,25 @@
                     if (data.success) {
                         return true;
                     } else {
-                        console.error(`Login failed: ${data.hintMessage || 'Unknown error'}`);
-                        await showErrorDialog({ title: '登录失败', message: data.hintMessage || '未知错误，请检查网络或联系管理员。' });
-                        return false;
+                        throw new Error(data.hintMessage || 'Unknown login error');
                     }
                 } catch (error) {
-                    console.error('Login network error:', error);
-                    await showErrorDialog({ title: '网络错误', message: '登录请求失败，请检查您的网络连接并刷新页面。' });
+                    console.error('Login process failed:', error);
                     return false;
                 }
             }
 
+            function enableChatFunctionality() {
+                const config = GAME_MODES[currentGameMode];
+                setInputState(true, config.placeholder);
+                updateUIForLoadedChat(); // 再次调用以确保placeholder包含成功人数等信息
+            }
+
+            function handleLoginFailure() {
+                showErrorDialog({ title: '连接失败', message: '无法连接到游戏服务，请刷新页面重试。' });
+                setInputState(false, "连接失败，请刷新重试");
+            }
+            
             function scrollToBottom() {
                 if (chatWindow && typeof chatWindow.scrollTo === 'function') {
                     chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
@@ -1313,11 +1321,11 @@
                 }
             }
 
-            async function loadChat(keyToLoad) {
+            async function loadChat(keyToLoad, isInitialLoad = false) {
                 const config = GAME_MODES[currentGameMode];
                 const savedData = localStorage.getItem(keyToLoad);
                 if (!savedData) {
-                    await startNewChat();
+                    await startNewChat(null, isInitialLoad);
                     return;
                 };
                 try {
@@ -1332,20 +1340,25 @@
                     chatWindow.innerHTML = '';
                     renderMessage({ text: config.greeting, sender: 'ai' });
                     chatHistory.forEach(msg => renderMessage(msg));
-                    if (isGameActive) {
-                        const puzzleDate = keyToLoad.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
-                        dailySuccessCount = await fetchSuccessCount(puzzleDate);
-                    } else {
-                        dailySuccessCount = null;
+                    
+                    if (isInitialLoad && isGameActive) {
+                        updateUIForLoadedChat(true); 
+                    } else if (!isInitialLoad) {
+                         if (isGameActive) {
+                            const puzzleDate = keyToLoad.substring(config.storagePrefix.length, config.storagePrefix.length + 10);
+                            dailySuccessCount = await fetchSuccessCount(puzzleDate);
+                        } else {
+                            dailySuccessCount = null;
+                        }
+                        updateUIForLoadedChat();
                     }
-                    updateUIForLoadedChat();
                 } catch (error) {
                     console.error("加载聊天记录失败:", error);
                     await startNewChat();
                 }
             }
 
-            async function startNewChat(selectedDate) {
+            async function startNewChat(selectedDate, isInitialLoad = false) {
                 const config = GAME_MODES[currentGameMode];
                 currentChatKey = null;
                 chatId = "";
@@ -1356,13 +1369,19 @@
                 chatWindow.innerHTML = '';
                 targetDate = selectedDate;
                 renderMessage({ text: config.greeting, sender: 'ai' });
-                if (selectedDate) {
-                    dailySuccessCount = await fetchSuccessCount(selectedDate.replace(/-/g, ''));
+                
+                if (isInitialLoad) {
+                    dailySuccessCount = null;
                 } else {
-                    dailySuccessCount = await fetchSuccessCount();
+                    if (selectedDate) {
+                        dailySuccessCount = await fetchSuccessCount(selectedDate.replace(/-/g, ''));
+                    } else {
+                        dailySuccessCount = await fetchSuccessCount();
+                    }
                 }
+                
                 populateSidebar();
-                updateUIForLoadedChat();
+                updateUIForLoadedChat(isInitialLoad);
                 if (isMobile) {
                     document.body.classList.remove('sidebar-open');
                 }
@@ -1373,31 +1392,37 @@
                 dailyPuzzleButton.style.display = isNewChat ? 'flex' : 'none';
             }
 
-            function updateUIForLoadedChat() {
+            function updateUIForLoadedChat(isInitialLoad = false) {
                 updateCalendarButtonVisibility();
                 const config = GAME_MODES[currentGameMode];
-                let placeholder = "";
-                if (isGameActive) {
-                    placeholder = config.placeholder;
-                    const isNewChat = currentChatKey === null;
-                    if (dailySuccessCount !== null) {
-                        const successText = ' ' + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
-                        if (!isMobile) {
-                            placeholder += successText;
+                let placeholder = config.placeholder;
+                
+                if (userInput.disabled && !isInitialLoad) {
+                     if (isGameActive) {
+                        if (dailySuccessCount !== null) {
+                            const isNewChat = currentChatKey === null;
+                            const successText = ' ' + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
+                            if (!isMobile) {
+                                placeholder += successText;
+                            }
+                        }
+                    } else {
+                        if (currentVictoryRank !== null) {
+                            placeholder = '您是第 ' + currentVictoryRank.toLocaleString() + ' 位猜出谜底的人！🎉';
+                        } else {
+                            placeholder = "恭喜你，已猜出谜底！请开启新对话。";
                         }
                     }
-                } else {
-                    if (currentVictoryRank !== null) {
-                        placeholder = '您是第 ' + currentVictoryRank.toLocaleString() + ' 位猜出谜底的人！🎉';
-                    } else {
-                        placeholder = "恭喜你，已猜出谜底！请开启新对话。";
-                    }
+                    userInput.placeholder = placeholder;
+                } else if (isInitialLoad) {
+                    userInput.placeholder = "正在连接服务...";
                 }
-                setInputState(isGameActive, placeholder);
+
                 document.querySelectorAll('.history-item').forEach(function(item) {
                     item.classList.toggle('active', item.dataset.key === currentChatKey);
                 });
-                if (!isMobile) {
+
+                if (!isMobile && !userInput.disabled) {
                     userInput.focus();
                 }
             }
@@ -1408,8 +1433,7 @@
                 try {
                     const response = await fetch(`/api/v0/quiz/daily/general/fetchActive?type=${config.typeParam}`, {
                         method: 'GET',
-                        headers: BASE_HEADERS,
-                        credentials: 'include'
+                        headers: BASE_HEADERS
                     });
                     if (!response.ok) throw new Error('API request failed');
                     const result = await response.json();
@@ -1431,6 +1455,7 @@
                 let dateForApi = puzzleDateStr ? puzzleDateStr.replace(/-/g, '') : getFormattedDate();
                 const url = `/api/v0/quiz/daily/getStatus?type=${config.typeParam}&date=${dateForApi}`;
                 try {
+                    // 这个API需要登录
                     const response = await fetch(url, { method: 'GET', headers: BASE_HEADERS, credentials: 'include' });
                     if (!response.ok) return null;
                     const data = await response.json();
@@ -1489,7 +1514,6 @@
                         renderMessage(successMsg);
                         currentVictoryRank = await fetchSuccessCount(puzzleDateForApi);
                     }
-                    updateUIForLoadedChat();
                 } catch (error) {
                     console.error("发送消息失败:", error);
                     chatHistory.pop();
@@ -1498,17 +1522,16 @@
                     chatHistory.push(errorMsg);
                     renderMessage(errorMsg);
                     userInput.value = messageText;
-                    setInputState(true, "发生错误，请重试");
                 } finally {
+                    setInputState(isGameActive, config.placeholder);
                     await saveHistory(isFirstMessage ? messageText : null);
+                    updateUIForLoadedChat();
                     if (!isMobile) userInput.focus();
                 }
             }
-
+            
             async function checkBrowserCompatibility() {
-                if (localStorage.getItem('suppressBrowserWarning') === 'true' || sessionStorage.getItem('browserVersionWarningShown') === 'true') {
-                    return;
-                }
+                if (localStorage.getItem('suppressBrowserWarning') === 'true' || sessionStorage.getItem('browserVersionWarningShown') === 'true') return;
                 const warningMessages = [];
                 const testEl = document.createElement('div');
                 testEl.style.display = 'flex';
@@ -1527,7 +1550,6 @@
                     await showBrowserWarningDialog({ title: '浏览器兼容性提示', message: fullMessage });
                 }
             }
-
             function getRelativeDateGroup(dateStr) {
                 const today = new Date();
                 const date = new Date(dateStr);
@@ -1539,7 +1561,6 @@
                 if (diffDays < 7) return "7天内";
                 return date.getFullYear() + '-' + padZero(date.getMonth() + 1);
             }
-
             function populateSidebar() {
                 const config = GAME_MODES[currentGameMode];
                 const prefix = config.storagePrefix;
@@ -1578,7 +1599,6 @@
                     });
                 });
             }
-
             function handleRename() {
                 if (!contextMenuTarget) return;
                 const key = contextMenuTarget.dataset.key;
@@ -1621,7 +1641,6 @@
                 input.addEventListener('blur', saveRename, { once: true });
                 input.addEventListener('keydown', onKeydown);
             }
-
             function showBrowserWarningDialog({ title, message }) {
                 title = title || '提示';
                 message = message || '';
@@ -1649,7 +1668,6 @@
                     resolver = resolve;
                 });
             }
-
             function showErrorDialog({ title, message }) {
                 title = title || '错误';
                 message = message || '';
@@ -1674,7 +1692,6 @@
                     resolver = resolve;
                 });
             }
-
             function showInfoDialog({ title, message }) {
                 title = title || '提示';
                 message = message || '';
@@ -1699,7 +1716,6 @@
                     resolver = resolve;
                 });
             }
-
             function showConfirmDialog({ title, message, confirmText, confirmClass }) {
                 title = title || '永久删除对话';
                 message = message || '删除后，该对话将不可恢复。确认删除吗？';
@@ -1732,7 +1748,6 @@
                     resolver = resolve;
                 });
             }
-
             async function handleDelete() {
                 if (!contextMenuTarget) return;
                 const key = contextMenuTarget.dataset.key;
@@ -1750,7 +1765,6 @@
                     }
                 }
             }
-
             function createCustomDropdown() {
                 gameModeDropdown.innerHTML = '';
                 const selected = document.createElement('div');
@@ -1792,7 +1806,6 @@
                     selected.classList.toggle('select-arrow-active');
                 });
             }
-
             function closeDropdown() {
                 const items = gameModeDropdown.querySelector('.select-items');
                 const selected = gameModeDropdown.querySelector('.select-selected');
@@ -1801,7 +1814,6 @@
                     if (selected) selected.classList.remove('select-arrow-active');
                 }
             }
-
             async function handleGameModeChange(newMode) {
                 currentGameMode = newMode;
                 localStorage.setItem('lastGameMode', currentGameMode);
@@ -1810,7 +1822,6 @@
                 createCustomDropdown();
                 await startNewChat();
             }
-
             async function handleExport() {
                 const allData = {};
                 const prefixes = Object.values(GAME_MODES).map(mode => mode.storagePrefix);
@@ -1841,7 +1852,6 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             }
-
             async function handleImport(event) {
                 const file = event.target.files[0];
                 if (!file) return;
@@ -1882,7 +1892,6 @@
                 };
                 reader.readAsText(file);
             }
-
             function setupThemeColorSync() {
                 const themeColorMeta = document.querySelector('meta[name="theme-color"]');
                 if (!themeColorMeta) return;
@@ -1896,7 +1905,6 @@
                 if (mediaQueryList.addEventListener) mediaQueryList.addEventListener('change', updateThemeColor);
                 else if (mediaQueryList.addListener) mediaQueryList.addListener(updateThemeColor);
             }
-
             function setupEventHandlers() {
                 sidebarToggleButton.addEventListener('click', () => {
                     appWrapper.classList.toggle('sidebar-collapsed');
@@ -1918,14 +1926,14 @@
                     }
                 });
                 userInput.addEventListener('focus', () => {
-                    if (isGameActive && dailySuccessCount !== null) {
+                    if (isGameActive && dailySuccessCount !== null && !userInput.disabled) {
                         const isNewChat = currentChatKey === null;
                         const dayText = isNewChat && !targetDate ? '今日' : '该日';
                         userInput.placeholder = GAME_MODES[currentGameMode].placeholder + ' ' + dayText + '已有 ' + dailySuccessCount.toLocaleString() + ' 人猜出谜底';
                     }
                 });
                 userInput.addEventListener('blur', () => {
-                    if (isGameActive) {
+                    if (isGameActive && !userInput.disabled) {
                         let placeholder = GAME_MODES[currentGameMode].placeholder;
                         if (!isMobile && dailySuccessCount !== null) {
                             const isNewChat = currentChatKey === null;
@@ -2006,7 +2014,6 @@
 
             async function initializeApp() {
                 setupThemeColorSync();
-
                 if ('serviceWorker' in navigator) {
                     window.addEventListener('load', () => {
                         navigator.serviceWorker.register('/sw.js')
@@ -2015,44 +2022,45 @@
                     });
                 }
                 await checkBrowserCompatibility();
-                
-                userInput.placeholder = "正在自动登录...";
-                const isLoggedIn = await performLogin();
 
-                if (isLoggedIn) {
-                    if (localStorage.getItem('sidebarCollapsedState') === 'true') {
-                        appWrapper.classList.add('sidebar-collapsed');
-                        sidebarToggleButton.textContent = '›';
-                    }
-                    const lastMode = localStorage.getItem('lastGameMode');
-                    if (lastMode && GAME_MODES[lastMode]) {
-                        currentGameMode = lastMode;
-                    }
-                    document.title = '猜盐 - ' + GAME_MODES[currentGameMode].title;
-
-                    createCustomDropdown();
-                    setupEventHandlers();
-
-                    const config = GAME_MODES[currentGameMode];
-                    const activeChatKey = localStorage.getItem(config.activeKey);
-
-                    let keyToLoad = null;
-                    if (activeChatKey && activeChatKey !== 'new') {
-                        keyToLoad = activeChatKey;
-                    } else if (!activeChatKey) {
-                        const keys = Object.keys(localStorage).filter(k => k.startsWith(config.storagePrefix)).sort().reverse();
-                        if (keys.length > 0) keyToLoad = keys[0];
-                    }
-
-                    if (keyToLoad) {
-                        await loadChat(keyToLoad);
-                    } else {
-                        await startNewChat();
-                    }
-                    populateSidebar();
-                } else {
-                    setInputState(false, "登录失败，请刷新页面重试");
+                if (localStorage.getItem('sidebarCollapsedState') === 'true') {
+                    appWrapper.classList.add('sidebar-collapsed');
+                    sidebarToggleButton.textContent = '›';
                 }
+                const lastMode = localStorage.getItem('lastGameMode');
+                if (lastMode && GAME_MODES[lastMode]) {
+                    currentGameMode = lastMode;
+                }
+                document.title = '猜盐 - ' + GAME_MODES[currentGameMode].title;
+
+                createCustomDropdown();
+                setupEventHandlers();
+                
+                const config = GAME_MODES[currentGameMode];
+                const activeChatKey = localStorage.getItem(config.activeKey);
+                let keyToLoad = null;
+                if (activeChatKey && activeChatKey !== 'new') {
+                    keyToLoad = activeChatKey;
+                } else if (!activeChatKey) {
+                    const keys = Object.keys(localStorage).filter(k => k.startsWith(config.storagePrefix)).sort().reverse();
+                    if (keys.length > 0) keyToLoad = keys[0];
+                }
+
+                if (keyToLoad) {
+                    await loadChat(keyToLoad, true);
+                } else {
+                    await startNewChat(null, true);
+                }
+                populateSidebar();
+
+                (async () => {
+                    const isLoggedIn = await performLogin();
+                    if (isLoggedIn) {
+                        enableChatFunctionality();
+                    } else {
+                        handleLoginFailure();
+                    }
+                })();
             }
 
             if (document.readyState === 'loading') {
