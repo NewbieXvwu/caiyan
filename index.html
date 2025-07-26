@@ -1257,7 +1257,7 @@
             function enableChatFunctionality() {
                 const config = GAME_MODES[currentGameMode];
                 setInputState(true, config.placeholder);
-                updateUIForLoadedChat(); // 再次调用以确保placeholder包含成功人数等信息
+                updateUIForLoadedChat();
             }
 
             function handleLoginFailure() {
@@ -1397,7 +1397,7 @@
                 const config = GAME_MODES[currentGameMode];
                 let placeholder = config.placeholder;
                 
-                if (userInput.disabled && !isInitialLoad) {
+                if (!userInput.disabled) {
                      if (isGameActive) {
                         if (dailySuccessCount !== null) {
                             const isNewChat = currentChatKey === null;
@@ -1413,10 +1413,11 @@
                             placeholder = "恭喜你，已猜出谜底！请开启新对话。";
                         }
                     }
-                    userInput.placeholder = placeholder;
                 } else if (isInitialLoad) {
-                    userInput.placeholder = "正在连接服务...";
+                    placeholder = "正在连接服务...";
                 }
+
+                userInput.placeholder = placeholder;
 
                 document.querySelectorAll('.history-item').forEach(function(item) {
                     item.classList.toggle('active', item.dataset.key === currentChatKey);
@@ -1440,11 +1441,12 @@
                     if (result.success && Array.isArray(result.data)) {
                         const dates = new Set(result.data);
                         activeDatesCache[currentGameMode] = dates;
+                        console.log('[Pre-fetch] Active dates loaded successfully into cache.');
                         return dates;
                     }
                     return new Set();
                 } catch (error) {
-                    console.error("获取可选日期失败:", error);
+                    console.error("[Pre-fetch] Failed to fetch active dates:", error);
                     await showErrorDialog({ title: '网络错误', message: '无法获取往日谜题列表，请稍后重试。' });
                     return null;
                 }
@@ -1455,7 +1457,6 @@
                 let dateForApi = puzzleDateStr ? puzzleDateStr.replace(/-/g, '') : getFormattedDate();
                 const url = `/api/v0/quiz/daily/getStatus?type=${config.typeParam}&date=${dateForApi}`;
                 try {
-                    // 这个API需要登录
                     const response = await fetch(url, { method: 'GET', headers: BASE_HEADERS, credentials: 'include' });
                     if (!response.ok) return null;
                     const data = await response.json();
@@ -1821,6 +1822,10 @@
                 activeDatesCache = {};
                 createCustomDropdown();
                 await startNewChat();
+                // 切换模式后，也预获取新模式的日期
+                (async () => {
+                    await fetchActiveDates();
+                })();
             }
             async function handleExport() {
                 const allData = {};
@@ -2012,7 +2017,7 @@
                 });
             }
 
-            async function initializeApp() {
+            function initializeApp() {
                 setupThemeColorSync();
                 if ('serviceWorker' in navigator) {
                     window.addEventListener('load', () => {
@@ -2021,7 +2026,7 @@
                             .catch(err => { console.log('ServiceWorker registration failed: ', err); });
                     });
                 }
-                await checkBrowserCompatibility();
+                checkBrowserCompatibility();
 
                 if (localStorage.getItem('sidebarCollapsedState') === 'true') {
                     appWrapper.classList.add('sidebar-collapsed');
@@ -2047,9 +2052,9 @@
                 }
 
                 if (keyToLoad) {
-                    await loadChat(keyToLoad, true);
+                    loadChat(keyToLoad, true);
                 } else {
-                    await startNewChat(null, true);
+                    startNewChat(null, true);
                 }
                 populateSidebar();
 
@@ -2060,6 +2065,10 @@
                     } else {
                         handleLoginFailure();
                     }
+                })();
+
+                (async () => {
+                    await fetchActiveDates();
                 })();
             }
 
