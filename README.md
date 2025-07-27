@@ -8,6 +8,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/NewbieXvwu/caiyan?style=flat&logo=github&color=FFD60A)](https://github.com/NewbieXvwu/caiyan)
 [![GitHub license](https://img.shields.io/github/license/NewbieXvwu/caiyan?style=flat&color=00D1FF)](./LICENSE)
 [![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fcaiyan.pages.dev&label=CF%20Pages&style=flat&logo=cloudflarepages&logoColor=f38020&color=f38020)](https://caiyan.pages.dev)
+[![Edgeone Pages](https://img.shields.io/website?url=https%3A%2F%2Fcaiyan.edgeone.app&label=Edgeone%20Pages&style=flat&logo=cloudflarepages&logoColor=f38020&color=f38020)](https://caiyan.edgeone.app)
 [![Netlify](https://api.netlify.com/api/v1/badges/b7246c76-e1f6-42f7-a388-191f2c2a154c/deploy-status)](https://caiyan.netlify.app)
 [![Vercel](https://img.shields.io/website?url=https%3A%2F%2Fcaiyan.vercel.app&logo=vercel&label=Vercel&color=00E5A8)](https://caiyan.vercel.app)
 
@@ -36,6 +37,7 @@
 ## 🧭 在线体验  
 | 节点 | 地址 | 备注 | 国内访问速度 |
 |---|---|---|---|
+| 🏠 主站 | [https://caiyan.edgeone.app](https://caiyan.edgeone.app) | Edgeone | ⭐⭐⭐⭐⭐ |
 | 🔀 分流 1 | [https://caiyan.netlify.app](https://caiyan.netlify.app) | Netlify | ⭐⭐⭐⭐ |
 | 🔀 分流 2 | [https://caiyan.pages.dev](https://caiyan.pages.dev) | Cloudflare Pages | ⭐⭐⭐ |
 | 🔀 分流 3 | [https://caiyan.vercel.app](https://caiyan.vercel.app) | Vercel | ❌ |
