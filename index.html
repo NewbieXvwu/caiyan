@@ -990,11 +990,18 @@
                         const dateApiString = getFormattedDate(cellDate);
                         cell.dataset.date = dateApiString;
 
-                        if (activeDatesSet.has(dateApiString) && isCurrentMonth) {
+                        if (activeDatesSet.has(dateApiString)) {
                             cell.classList.add('available');
                             cell.addEventListener('click', () => {
                                 if (datePickerDragged) return;
+                                
                                 onDateSelectCallback(dateApiString.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+
+                                if (!isCurrentMonth) {
+                                    const direction = cellDate > displayDate ? 1 : -1;
+                                    moveTo(direction);
+                                }
+                                
                                 popoverEl.classList.remove('show');
                             });
                         } else {
