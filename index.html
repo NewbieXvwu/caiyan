@@ -430,7 +430,7 @@
             touch-action: manipulation;
         }
 
-        。dp-nav-btn:hover:not(:disabled) {
+        .dp-nav-btn:hover:not(:disabled) {
             background-color: var(--history-item-hover-bg);
         }
         
@@ -461,19 +461,19 @@
             line-height: 1;
         }
 
-        。dp-grid-wrapper {
+        .dp-grid-wrapper {
             position: relative;
             overflow: hidden;
             height: 260px;
         }
 
-        。dp-track {
+        .dp-track {
             display: flex;
             height: 100%;
             will-change: transform;
         }
 
-        。dp-grid {
+        .dp-grid {
             flex: 0 0 100%;
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -482,7 +482,7 @@
             align-content: flex-start;
         }
         
-        。dp-day {
+        .dp-day {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -495,9 +495,8 @@
             transition: background-color 0.2s, color 0.2s, border-color 0.2s;
         }
         
-        。dp-day。other-month {
+        .dp-day.other-month {
             color: var(--md-sys-color-on-surface-variant);
-			opacity: 0.6;
         }
         
         .dp-day.available {
@@ -1009,7 +1008,7 @@
                             cell.classList.add('disabled');
                         }
 
-                        if (isCurrentMonth && cellDate.getTime() === today.getTime()) cell.classList.add('today');
+                        if (cellDate.getTime() === today.getTime()) cell.classList.add('today');
                         if (selectedDate && cellDate.getTime() === selectedDate.getTime()) cell.classList.add('selected');
                         g.appendChild(cell);
                     }
@@ -2117,28 +2116,28 @@
 
             if (isModernBrowserSupported()) {
                 try {
-                    (function(c,l,a,r,i,t,y){
+                    (function(c，l，a，r，i，t,y){
                         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
                     })(window, document, "clarity", "script", "sfopgxayyt");
                 } catch (e) {
-                    console.error("Clarity script initialization failed, but continuing with main app.", e);
+                    console。error("Clarity script initialization failed, but continuing with main app."， e);
                 }
                 try {
 					var simpleAnalyticsScript = document.createElement('script');
 					simpleAnalyticsScript.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
-					simpleAnalyticsScript.setAttribute('data-collect-dnt', 'true');
-					simpleAnalyticsScript.async = true;
+					simpleAnalyticsScript。setAttribute('data-collect-dnt'， 'true');
+					simpleAnalyticsScript。async = true;
 					document.head.appendChild(simpleAnalyticsScript);
 				} catch (e) {
-					console.error("Simple Analytics script initialization failed.", e);
+					console。error("Simple Analytics script initialization failed."， e);
 				}
                 var scriptTemplate = document.getElementById('main-app-script');
                 if (scriptTemplate) {
                     var executableScript = document.createElement('script');
-                    executableScript.textContent = scriptTemplate.textContent;
-                    document.body.appendChild(executableScript);
+                    executableScript。textContent = scriptTemplate。textContent;
+                    document。body.appendChild(executableScript);
                 }
 
             } else {
