@@ -497,6 +497,7 @@
         
         .dp-day.other-month {
             color: var(--md-sys-color-on-surface-variant);
+			opacity: 0.6;
         }
         
         .dp-day.available {
@@ -990,18 +991,28 @@
                         const dateApiString = getFormattedDate(cellDate);
                         cell.dataset.date = dateApiString;
 
-                        if (activeDatesSet.has(dateApiString) && isCurrentMonth) {
+                        if (activeDatesSet.has(dateApiString)) {
                             cell.classList.add('available');
                             cell.addEventListener('click', () => {
                                 if (datePickerDragged) return;
+                                
                                 onDateSelectCallback(dateApiString.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+
+                                if (!isCurrentMonth) {
+                                    const direction = cellDate > displayDate ? 1 : -1;
+                                    moveTo(direction);
+                                }
+                                
                                 popoverEl.classList.remove('show');
                             });
                         } else {
                             cell.classList.add('disabled');
                         }
-
-                        if (cellDate.getTime() === today.getTime()) cell.classList.add('today');
+                        
+                        // --- 修改点在这里 ---
+                        // 仅当日期属于当前显示的月份时，才添加 'today' 样式
+                        if (isCurrentMonth && cellDate.getTime() === today.getTime()) cell.classList.add('today');
+                        
                         if (selectedDate && cellDate.getTime() === selectedDate.getTime()) cell.classList.add('selected');
                         g.appendChild(cell);
                     }
